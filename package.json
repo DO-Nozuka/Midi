@@ -1,0 +1,14 @@
+
+{
+  "author": "Daiki Onozuka",
+  "dependencies": {
+  },
+  "description": "Midi Utilities(for Unity)",
+  "displayName": "MidiUtilities",
+  "keywords": [ "unity", "MIDI" ],
+  "license": "MIT",
+  "name": "com.donozuka.midiutilities",
+  "repository": "github:DO-Nozuka/MidiUtilities",
+  "unity": "2020.1",
+  "version": "0.9.0"
+}
