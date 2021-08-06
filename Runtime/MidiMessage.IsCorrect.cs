@@ -1,4 +1,4 @@
-﻿namespace Dono.MidiUtilities.MidiMessage
+﻿namespace Dono.MidiUtilities.Runtime
 {
     /// <summary>
     /// MidiMessage.IsCorrect
@@ -93,7 +93,7 @@
         }
         public static bool IsMetaEventMessage(byte[] data)
         {
-            throw new System.NotImplementedException();
+            throw new global::System.NotImplementedException();
         }
 
         //ツールのツール
