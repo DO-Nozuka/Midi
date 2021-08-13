@@ -17,7 +17,8 @@
             true,   false,  true,   false,  true,   true,   false,  true,   false,  true,   false,  true,   //108 -119 国際式  8, ヤマハ式  7 
             true,   false,  true,   false,  true,   true,   false,  true                                    //120 -127 国際式  9, ヤマハ式  8
         };
-        
-        //public bool IsWhiteNote() => IsWhiteNoteTable[]
+
+        public static bool IsWhiteNote(byte note) => IsWhiteNoteTable[note];
+        public static bool IsBlackNote(byte note) => !IsWhiteNoteTable[note];
     }
 }
