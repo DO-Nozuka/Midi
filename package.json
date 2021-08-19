@@ -7,7 +7,7 @@
   "displayName": "MidiUtilities",
   "keywords": [ "unity", "MIDI" ],
   "license": "MIT",
-  "name": "com.donozuka.midiutilities",
+  "name": "com.donozuka.midi",
   "repository": "github:DO-Nozuka/MidiUtilities",
   "unity": "2020.1",
   "version": "0.9.7"
