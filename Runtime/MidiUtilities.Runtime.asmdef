@@ -1,3 +1,16 @@
 {
-	"name": "Message"
+    "name": "Message",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8448db6518f7bfe42a964d0f71226b2b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
