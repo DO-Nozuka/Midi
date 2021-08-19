@@ -1,10 +1,12 @@
 ﻿using Dono.Midi.Runtime.Types;
+using Dono.MidiRuntime;
 
 namespace Dono.Midi.Runtime
 {
     public partial class MidiMessage
     {
-        private bool isCorrectFormat { get; }
+        internal bool isCorrectFormat => MidiUtilities.IsCorrectFormat(Bytes);
+
         #region public Variables
         /// <summary>
         /// ステータスバイトとデータバイトを含むデータ列
@@ -104,48 +106,145 @@ namespace Dono.Midi.Runtime
             }
 
             // Typesの更新
-            UpdateMessageType();
-            UpdateChannelVoiceType();
-            UpdateControlChangeType();
-            UpdateChannelModeType();
-            UpdateSystemCommonType();
-            UpdateSystemRealTimeType();
-            UpdateMetaEventType();
-
-            //フォーマットの確認
-            //MidiUtilities.IsCorrectFormat(bytes);
-            throw new System.NotImplementedException();
-            
+            if (isCorrectFormat)
+            {
+                UpdateMessageType();
+                UpdateChannelVoiceType();
+                UpdateControlChangeType();
+                UpdateChannelModeType();
+                UpdateSystemCommonType();
+                UpdateSystemRealTimeType();
+                UpdateMetaEventType();
+            }
         }
 
         private void UpdateMessageType()
-        {
-            throw new System.NotImplementedException();
+        {            
+            // ChannelModeMessage
+            if (Status == 0x0B && Length == 3)//if Length <= 1, Can't read Data1
+            {
+                if (0x78 <= Data1 && Data1 <= 0x7F) 
+                {
+                    messageType = MessageType.ChannelMode;
+                    return;
+                }
+            }
+            // ChannelVoice
+            if(0x80 <= StatusByte && StatusByte <= 0xEF)
+            {
+                messageType = MessageType.ChannelVoice;
+                return;
+            }
+            // SystemExclusive
+            if (StatusByte == 0xF0)
+            {
+                messageType = MessageType.SystemExclusive;
+                return;
+            }
+            // SystemCommon
+            if (0xF1 <= StatusByte && StatusByte <= 0xF7)
+            {
+                messageType = MessageType.SystemCommon;
+                return;
+            }
+            // SystemRealTime
+            if (0xF8 <= StatusByte && StatusByte <= 0xFF && Bytes.Length == 1)
+            {
+                messageType = MessageType.SystemRealtime;
+                return;
+            }
+            // MetaEvent
+            if (StatusByte == 0xFF && Bytes.Length > 1)
+            {
+                messageType = MessageType.MetaEvent;
+                return;
+            }
+            // else
+            messageType = MessageType.None;
+            return;
         }
-
         private void UpdateChannelVoiceType()
         {
-            throw new System.NotImplementedException();
+            if (messageType == MessageType.ChannelVoice)
+                channelVoiceType = (ChannelVoiceType)(StatusByte & 0xF0);
+            else
+                channelVoiceType = ChannelVoiceType.None;
         }
         private void UpdateControlChangeType()
         {
-            throw new System.NotImplementedException();
+            if(messageType == MessageType.ChannelVoice && channelVoiceType == ChannelVoiceType.ControlChange)
+                controlChangeType = (ControlChangeType)Data1;
+            else
+                controlChangeType = ControlChangeType.None;
         }
         private void UpdateChannelModeType()
         {
-            throw new System.NotImplementedException();
+            if(messageType == MessageType.ChannelMode)
+                channelModeType = (ChannelModeType)Data1;
+            else
+                channelModeType = ChannelModeType.None;
         }
         private void UpdateSystemCommonType()
         {
-            throw new System.NotImplementedException();
+            if(messageType == MessageType.SystemCommon)
+                systemCommonType = (SystemCommonType)StatusByte;
+            else
+                systemCommonType = SystemCommonType.None;
         }
         private void UpdateSystemRealTimeType()
         {
-            throw new System.NotImplementedException();
+            if(messageType == MessageType.SystemRealtime)
+                systemRealtimeType = (SystemRealTimeType)StatusByte;
+            else
+                systemRealtimeType = SystemRealTimeType.None;
         }
         private void UpdateMetaEventType()
         {
-            throw new System.NotImplementedException();
+            if (messageType == MessageType.MetaEvent)
+            {
+                switch((MetaEventType)Data1)
+                {
+                    case MetaEventType.SequenceNumber:
+                        break;
+                    case MetaEventType.TextEvent:
+                        break;
+                    case MetaEventType.CopyrightNotice:
+                        break;
+                    case MetaEventType.SequenceAndTrackName:
+                        break;
+                    case MetaEventType.InstrumentName:
+                        break;
+                    case MetaEventType.Lyric:
+                        break;
+                    case MetaEventType.Marker:
+                        break;
+                    case MetaEventType.CuePoint:
+                        break;
+                    case MetaEventType.ChannelPrefix:
+                        break;
+                    case MetaEventType.PortPrefix:
+                        break;
+                    case MetaEventType.EndOfTrack:
+                        break;
+                    case MetaEventType.SetTempo:
+                        break;
+                    case MetaEventType.SMPTEOffset:
+                        break;
+                    case MetaEventType.TimeSignature:
+                        break;
+                    case MetaEventType.KeySignature:
+                        break;
+                    case MetaEventType.SequencerSpecificMetaEvent:
+                        break;
+                    default:
+                        metaEventType = MetaEventType.None;
+                        break;
+                }
+            }
+            else
+            {
+                metaEventType = MetaEventType.None;
+            }
         }
 
         public override string ToString()

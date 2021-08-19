@@ -1,124 +1,128 @@
-using Dono.Midi.Runtime;
+ï»¿using Dono.Midi.Runtime;
 
 namespace Dono.MidiRuntime
 {
     public static partial class MidiUtilities
     {
-        public static bool IsCorrectFormat(MidiMessage message) { throw new System.NotImplementedException(); }
+        public static bool IsCorrectFormat(byte[] bytes)
+        {
+            if (!IsCorrectDataFormat(bytes))
+                return false;
 
-        ///// <summary>
-        ///// "data"‚ª"messageType"‚ÌŒ`®‚É‚È‚Á‚Ä‚¢‚é‚©‚ğŠm”F‚µ‚Ü‚·
-        ///// </summary>
-        ///// <param name="data"></param>
-        ///// <param name="messageType"></param>
-        ///// <returns></returns>
-        //public static bool IsCorrectMessage(byte[] data, Type messageType = Type.None)
-        //{
-        //    switch(messageType)
-        //    {
-        //        case Type.NoteOff:                  return IsNoteOffMessage(data);
-        //        case Type.NoteOn:                   return IsNoteOnMessage(data);
-        //        case Type.PolyphonicKeyPressure:    return IsPolyphonicKeyPressureMessage(data);
-        //        case Type.ControlChange:            return IsControlChangeMessage(data);
-        //        case Type.ProgramChange:            return IsProgramChangeMessage(data);
-        //        case Type.ChannelPressure:          return IsChannelPressureMessage(data);
-        //        case Type.PitchBend:                return IsPitchBendMessage(data);
-        //        case Type.ChannelModeSelect:        return IsChannelModeSelectMessage(data);
-        //        case Type.SystemCommonMessage:      return IsSystemCommonMessage(data);
-        //        case Type.SystemRealTimeMessage:    return IsSystemRealTimeMessage(data);
-        //        case Type.MetaEvent:                return IsMetaEventMessage(data);
-        //        default:    //StatusByteType.None  
+            if (!IsCorrectMessageFormat(bytes))
+                return false;
 
-        //            return false;
-        //    }
-        //}
+            return true;
+        }
 
-        ////Channel Voice Message
-        //public static bool IsNoteOffMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 3, 0x80); }                
-        //public static bool IsNoteOnMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 3, 0x90); }
-        //public static bool IsPolyphonicKeyPressureMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 3, 0xA0); }
-        //public static bool IsControlChangeMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 3, 0xB0); }
-        //public static bool IsProgramChangeMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 2, 0xC0); }
-        //public static bool IsChannelPressureMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 2, 0xD0); }
-        //public static bool IsPitchBendMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 3, 0xE0); }
-        ////Channel Mode Message
-        //public static bool IsChannelModeSelectMessage(byte[] data) { return IsCorrectChannelMessageFormat(data, 3, 0xB0); }
-        ////System Message
-        ////public static bool IsSystemExclusiveMessage(byte[] data) 
-        ////{
-        ////    //ƒXƒe[ƒ^ƒXƒoƒCƒg
-        ////    if (data[0] != 0xF0)
-        ////        return false;
+        /// <summary>
+        /// 0b1xxxxxxx 0b0xxxxxxx ... ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã«ãªã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+        /// ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãŒæ­£ã—ã„å ´åˆtrue, æ­£ã—ããªã„å ´åˆfalse, ãƒ‡ãƒ¼ã‚¿é•·ãŒ0ã®å ´åˆã‚‚false
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        private static bool IsCorrectDataFormat(byte[] bytes)
+        {
+            if (bytes == null)
+                return false;
+            if (bytes.Length == 0)
+                return false;
+            if ((bytes[0] & 0b10000000) != 0b10000000)
+                return false;
+            for(int i = 1; i < bytes.Length; i++)
+            {
+                if((bytes[i] & 0b10000000) != 0b00000000)
+                    return false;
+            }
 
-        ////    //ƒf[ƒ^ƒoƒCƒg
-        ////    for(int i = 1; i < data.Length - 1; i++)
-        ////    {
-        ////        if ((data[i] & 0b10000000) != 0)
-        ////            return false;
-        ////    }
+            return true;
+        }
 
-        ////    //EOX(End of eXclusive)
-        ////    if (data[data.Length - 1] != 0xF7)
-        ////        return false;
-
-        ////    return true;
-        ////}
-        //public static bool IsSystemCommonMessage(byte[] data)
-        //{
-        //    switch(data[0])
-        //    {
-        //        case 0xF1:  return IsCorrectChannelMessageFormat(data, 2, 0xF0);
-        //        case 0xF2:  return IsCorrectChannelMessageFormat(data, 3, 0xF0);
-        //        case 0xF3:  return IsCorrectChannelMessageFormat(data, 2, 0xF0);
-        //        case 0xF4:  return IsCorrectChannelMessageFormat(data, 1, 0xF0); //(–¢’è‹`;—\–ñÏ)
-        //        case 0xF5:  return IsCorrectChannelMessageFormat(data, 1, 0xF0); //(–¢’è‹`;—\–ñÏ)
-        //        case 0xF6:  return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        case 0xF7:  return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        default:    return false;
-        //    }
-        //}
-        //public static bool IsSystemRealTimeMessage(byte[] data)
-        //{
-        //    switch (data[0])
-        //    {
-        //        case 0xF8: return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        case 0xF9: return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        case 0xFA: return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        case 0xFB: return IsCorrectChannelMessageFormat(data, 1, 0xF0); //(–¢’è‹`;—\–ñÏ)
-        //        case 0xFC: return IsCorrectChannelMessageFormat(data, 1, 0xF0); //(–¢’è‹`;—\–ñÏ)
-        //        case 0xFD: return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        case 0xFE: return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        case 0xFF: return IsCorrectChannelMessageFormat(data, 1, 0xF0);
-        //        default: return false;
-        //    }
-        //}
-        //public static bool IsMetaEventMessage(byte[] data)
-        //{
-        //    throw new global::System.NotImplementedException();
-        //}
-
-        ////ƒc[ƒ‹‚Ìƒc[ƒ‹
-        //private static bool IsCorrectChannelMessageFormat(byte[] data, byte correctDataLength, byte statusMask)
-        //{
-        //    //ƒf[ƒ^’·‚ÌŠm”F
-        //    if (data.Length != correctDataLength)
-        //        return false;
-
-        //    //ƒXƒe[ƒ^ƒXƒoƒCƒg‚ÌƒtƒH[ƒ}ƒbƒgŠm”F
-        //    if ((data[0] & 0b11110000) != statusMask)
-        //        return false;
-
-        //    //ƒf[ƒ^ƒoƒCƒg‚ÌƒtƒH[ƒ}ƒbƒgŠm”F(æ“ª‚ª0‚Å‚ ‚é‚±‚Æ)
-        //    for (int i = 1; i < data.Length; i++)
-        //    {
-        //        if ((data[i] & 0b10000000) != 0)
-        //            return false;
-        //    }
-
-        //    return true;
-        //}
-
-
-
+        /// <summary>
+        /// "data"ãŒ"messageType"ã®å½¢å¼ã«ãªã£ã¦ã„ã‚‹ã‹ã‚’ç¢ºèªã—ã¾ã™
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="messageType"></param>
+        /// <returns></returns>
+        private static bool IsCorrectMessageFormat(byte[] message)
+        {
+            if (0x80 <= message[0] && message[0] <= 0xAF)
+            {
+                return message.Length == 3;
+            }
+            if (message[0] <= 0xBF)
+            {
+                if (message.Length == 3)
+                {
+                    if (message[1] <= 0x77)
+                        return true;
+                    else //if(message[1] <= 7F) //Channel Mode Message
+                    {
+                        switch (message[1])
+                        {
+                            case 0x78: return message[2] == 0;
+                            case 0x79: return message[2] == 0;
+                            case 0x7A: return message[2] == 0 || message[2] == 0xFF;
+                            case 0x7B: return message[2] == 0;
+                            case 0x7C: return message[2] == 0;
+                            case 0x7D: return message[2] == 0;
+                            case 0x7E: return message[2] <= 16;
+                            case 0x7F: return message[2] == 0;
+                        }
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            if (message[0] <= 0xDF)
+            {
+                return message.Length == 2;
+            }
+            if (message[0] <= 0xEF)
+            {
+                return message.Length == 3;
+            }
+            if (message[0] == 0xF0)
+            {
+                //SystemExclusive
+                throw new System.Exception();
+            }
+            if (message[0] <= 0xF7)
+            {
+                switch (message[0])
+                {
+                    case 0xF1: return message.Length == 2;
+                    case 0xF2: return message.Length == 3;
+                    case 0xF3: return message.Length == 2;
+                    case 0xF4: return false;   //Undefined
+                    case 0xF5: return false;   //Undefined
+                    case 0xF6: return message.Length == 1;
+                    case 0xF7: return message.Length == 1;
+                }
+            }
+            if (message[0] <= 0xFE)
+            {
+                switch (message[0])
+                {
+                    case 0xF8: return message.Length == 1;
+                    case 0xF9: return false;   //Undefined
+                    case 0xFA: return message.Length == 1;
+                    case 0xFB: return message.Length == 1;
+                    case 0xFC: return message.Length == 1;
+                    case 0xFD: return false;   //Undefined
+                    case 0xFE: return message.Length == 1;
+                }
+            }
+            if (message[0] == 0xFF)
+            {
+                if (message.Length == 1) // System Reset
+                    return true;
+                if (message.Length >= 2) //Meta Event (not check what it mean)
+                    return true;
+            }
+            return false;
+        }
     }
 }
