@@ -1,4 +1,4 @@
-namespace Dono.MidiUtilities.Runtime.Types
+namespace Dono.Midi.Runtime.Types
 {
 
     public enum MessageType : byte

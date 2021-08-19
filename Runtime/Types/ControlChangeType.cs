@@ -1,4 +1,4 @@
-﻿namespace Dono.MidiUtilities.Runtime.Types
+﻿namespace Dono.Midi.Runtime.Types
 {
     ///0Bn 0 - 119
     public enum ControlChangeType

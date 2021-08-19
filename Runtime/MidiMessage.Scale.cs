@@ -1,4 +1,4 @@
-﻿namespace Dono.MidiUtilities.Runtime
+﻿namespace Dono.Midi.Runtime
 {
     public partial class MidiMessage
     {

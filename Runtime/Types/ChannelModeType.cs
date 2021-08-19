@@ -1,4 +1,4 @@
-﻿namespace Dono.MidiUtilities.Runtime.Types
+﻿namespace Dono.Midi.Runtime.Types
 {
     // 0xBn n = 120-127
     public enum ChannelModeType

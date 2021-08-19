@@ -1,4 +1,4 @@
-﻿namespace Dono.MidiUtilities.Runtime.Types
+﻿namespace Dono.Midi.Runtime.Types
 {
     // FF tt len
     // tt = 0-127

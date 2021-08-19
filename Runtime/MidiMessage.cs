@@ -1,6 +1,6 @@
-﻿using Dono.MidiUtilities.Runtime.Types;
+﻿using Dono.Midi.Runtime.Types;
 
-namespace Dono.MidiUtilities.Runtime
+namespace Dono.Midi.Runtime
 {
     public partial class MidiMessage
     {

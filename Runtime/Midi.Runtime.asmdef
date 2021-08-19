@@ -1,5 +1,5 @@
 {
-    "name": "Message",
+    "name": "Midi.Runtime",
     "rootNamespace": "",
     "references": [
         "GUID:8448db6518f7bfe42a964d0f71226b2b"

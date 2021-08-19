@@ -1,4 +1,4 @@
-﻿namespace Dono.MidiUtilities.Runtime
+﻿namespace Dono.Midi.Runtime
 {
     /// <summary>
     /// MidiMessage.IsCorrect

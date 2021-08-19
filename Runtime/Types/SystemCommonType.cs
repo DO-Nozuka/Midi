@@ -1,4 +1,4 @@
-﻿namespace Dono.MidiUtilities.Runtime.Types
+﻿namespace Dono.Midi.Runtime.Types
 {
     // 0xFs s=1-7
     public enum SystemCommonType
