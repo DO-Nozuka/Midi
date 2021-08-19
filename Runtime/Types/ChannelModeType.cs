@@ -1,7 +1,7 @@
 ﻿namespace Dono.MidiUtilities.Runtime.Types
 {
     // 0xBn n = 120-127
-    enum ChannelModeType
+    public enum ChannelModeType
     {
         None = 0x00,
         AllSoundOff = 0x78,

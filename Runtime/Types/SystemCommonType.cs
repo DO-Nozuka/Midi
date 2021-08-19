@@ -1,7 +1,7 @@
 ﻿namespace Dono.MidiUtilities.Runtime.Types
 {
     // 0xFs s=1-7
-    enum SystemCommonType
+    public enum SystemCommonType
     {
         None = 0x00,
         MidiTimeCode = 0xF1,

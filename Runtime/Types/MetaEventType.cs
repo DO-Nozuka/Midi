@@ -3,7 +3,7 @@
     // FF tt len
     // tt = 0-127
     // len = 0-
-    enum MetaEventType
+    public enum MetaEventType
     {
         None = 0xFF,
         SequenceNumber = 0x00,

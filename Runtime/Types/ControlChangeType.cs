@@ -1,7 +1,7 @@
 ﻿namespace Dono.MidiUtilities.Runtime.Types
 {
     ///0Bn 0 - 119
-    enum ControlChangeType
+    public enum ControlChangeType
     {
         None = 0xFF,
         /*-- 14Bit Control MSB */

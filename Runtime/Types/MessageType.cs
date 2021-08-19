@@ -1,7 +1,7 @@
 namespace Dono.MidiUtilities.Runtime.Types
 {
 
-    enum MessageType : byte
+    public enum MessageType : byte
     {
         /// <summary>
         /// ŠY“–‚È‚µ
