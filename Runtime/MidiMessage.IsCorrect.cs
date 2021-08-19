@@ -118,17 +118,6 @@
         //    return true;
         //}
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="value1"></param>
-        ///// <param name="value2"></param>
-        ///// <returns></returns>
-        //public static int GetPitchBendValue(byte value1, byte value2) => (value2 << 7) + value1 - 8192;
-        //public static float GetPitchBendRate(byte value1, byte value2)
-        //{
-        //    var value = GetPitchBendValue(value1, value2);
-        //    return value > 0 ? value / 8191f : value / 8192f;
-        //}
+
     }
 }
