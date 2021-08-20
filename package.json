@@ -4,11 +4,11 @@
   "dependencies": {
   },
   "description": "Midi Utilities(for Unity)",
-  "displayName": "MidiUtilities",
+  "displayName": "Midi",
   "keywords": [ "unity", "MIDI" ],
   "license": "MIT",
   "name": "com.donozuka.midi",
-  "repository": "github:DO-Nozuka/MidiUtilities",
+  "repository": "github:DO-Nozuka/Midi",
   "unity": "2020.1",
   "version": "0.9.8"
 }
