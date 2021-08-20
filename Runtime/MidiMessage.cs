@@ -1,5 +1,4 @@
 ﻿using Dono.Midi.Runtime.Types;
-using Dono.MidiRuntime;
 
 namespace Dono.Midi.Runtime
 {

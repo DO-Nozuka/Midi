@@ -1,6 +1,4 @@
-﻿using Dono.Midi.Runtime;
-
-namespace Dono.MidiRuntime
+﻿namespace Dono.Midi.Runtime
 {
     public static partial class MidiUtilities
     {
