@@ -1,4 +1,6 @@
 ﻿using Dono.Midi.Runtime.Types;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Dono.Midi.Runtime
 {
@@ -97,9 +99,67 @@ namespace Dono.Midi.Runtime
 
         private void Initialize(byte[] bytes)
         {
+            if (bytes.Length == 0)
+                return;
+
             // データのコピー
-            Bytes = new byte[bytes.Length];
-            for (int i = 0; i < bytes.Length; i++)
+            int messageLength = 0;
+
+            switch (bytes[0] & 0xF0)
+            {
+                case 0x80:
+                case 0x90:
+                case 0xA0:
+                case 0xB0:
+                case 0xE0:
+                    messageLength = 3;
+                    break;
+
+                case 0xC0:
+                case 0xD0:
+                    messageLength = 2;
+                    break;
+
+                case 0xF0:
+                    switch (bytes[0])
+                    {
+                        case 0xF0:
+                            messageLength = bytes.Length;
+                            break;
+                        case 0xF1:
+                            messageLength = 2;
+                            break;
+                        case 0xF2:
+                            messageLength = 3;
+                            break;
+                        case 0xF3:
+                            messageLength = 2;
+                            break;
+                        case 0xF4:
+                        case 0xF5:
+                        case 0xF6:
+                        case 0xF7:
+                            messageLength = 1;
+                            break;
+                        case 0xF8:
+                        case 0xF9:
+                        case 0xFA:
+                        case 0xFB:
+                        case 0xFC:
+                        case 0xFD:
+                        case 0xFE:
+                        case 0xFF:
+                            messageLength = 1;
+                            break;
+                    }
+                    break;
+                default:
+                    Debug.Assert(false);
+                    break;
+            }
+
+            Bytes = new byte[messageLength];
+            for (int i = 0; i < messageLength; i++)
             {
                 Bytes[i] = bytes[i];
             }
@@ -118,18 +178,18 @@ namespace Dono.Midi.Runtime
         }
 
         private void UpdateMessageType()
-        {            
+        {
             // ChannelModeMessage
             if (Status == 0x0B && Length == 3)//if Length <= 1, Can't read Data1
             {
-                if (0x78 <= Data1 && Data1 <= 0x7F) 
+                if (0x78 <= Data1 && Data1 <= 0x7F)
                 {
                     messageType = MessageType.ChannelMode;
                     return;
                 }
             }
             // ChannelVoice
-            if(0x80 <= StatusByte && StatusByte <= 0xEF)
+            if (0x80 <= StatusByte && StatusByte <= 0xEF)
             {
                 messageType = MessageType.ChannelVoice;
                 return;
@@ -171,28 +231,28 @@ namespace Dono.Midi.Runtime
         }
         private void UpdateControlChangeType()
         {
-            if(messageType == MessageType.ChannelVoice && channelVoiceType == ChannelVoiceType.ControlChange)
+            if (messageType == MessageType.ChannelVoice && channelVoiceType == ChannelVoiceType.ControlChange)
                 controlChangeType = (ControlChangeType)Data1;
             else
                 controlChangeType = ControlChangeType.None;
         }
         private void UpdateChannelModeType()
         {
-            if(messageType == MessageType.ChannelMode)
+            if (messageType == MessageType.ChannelMode)
                 channelModeType = (ChannelModeType)Data1;
             else
                 channelModeType = ChannelModeType.None;
         }
         private void UpdateSystemCommonType()
         {
-            if(messageType == MessageType.SystemCommon)
+            if (messageType == MessageType.SystemCommon)
                 systemCommonType = (SystemCommonType)StatusByte;
             else
                 systemCommonType = SystemCommonType.None;
         }
         private void UpdateSystemRealTimeType()
         {
-            if(messageType == MessageType.SystemRealtime)
+            if (messageType == MessageType.SystemRealtime)
                 systemRealtimeType = (SystemRealTimeType)StatusByte;
             else
                 systemRealtimeType = SystemRealTimeType.None;
@@ -201,7 +261,7 @@ namespace Dono.Midi.Runtime
         {
             if (messageType == MessageType.MetaEvent)
             {
-                switch((MetaEventType)Data1)
+                switch ((MetaEventType)Data1)
                 {
                     case MetaEventType.SequenceNumber:
                         break;
