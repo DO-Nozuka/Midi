@@ -57,7 +57,7 @@ namespace Dono.Midi.Runtime
         {
             if (ccType == ControlChangeType.None)
                 return null;
-            return GenerateMidiMessage((byte)(0xB0 + channel), value, channel);
+            return GenerateMidiMessage((byte)(0xB0 + channel), (byte)ccType, value);
         }
         public static MidiMessage GenerateChannelModeMessage(ChannelModeType cmType, byte channel = 0, byte value = 0)
         {
