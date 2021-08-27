@@ -40,11 +40,11 @@ namespace Dono.Midi.Runtime
 
         public static MidiMessage GenerateNoteOffMessage(byte noteNumber, byte velocity, byte channel = 0)
         {
-            return GenerateMidiMessage((byte)(0x80 & channel), noteNumber, velocity);
+            return GenerateMidiMessage((byte)(0x80 + channel), noteNumber, velocity);
         }
         public static MidiMessage GenerateNoteOnMessage(byte noteNumber, byte velocity, byte channel = 0)
         {
-            return GenerateMidiMessage((byte)(0x90 & channel), noteNumber, velocity);
+            return GenerateMidiMessage((byte)(0x90 + channel), noteNumber, velocity);
         }
 
         public static MidiMessage GenerateChannelVoiceMessage(ChannelVoiceType channelVoiceType, byte data1, byte data2, byte channel = 0)
@@ -57,7 +57,7 @@ namespace Dono.Midi.Runtime
         {
             if (ccType == ControlChangeType.None)
                 return null;
-            return GenerateMidiMessage((byte)(0xB0 & channel), value, channel);
+            return GenerateMidiMessage((byte)(0xB0 + channel), value, channel);
         }
         public static MidiMessage GenerateChannelModeMessage(ChannelModeType cmType, byte channel = 0, byte value = 0)
         {
