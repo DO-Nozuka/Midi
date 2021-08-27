@@ -51,7 +51,7 @@ namespace Dono.Midi.Runtime
         {
             if (channelVoiceType == ChannelVoiceType.None)
                 return null;
-            return GenerateMidiMessage((byte)((byte)channelVoiceType & channel), data1, data2);
+            return GenerateMidiMessage((byte)((byte)channelVoiceType + channel), data1, data2);
         }
         public static MidiMessage GenerateControlChangeMessage(ControlChangeType ccType, byte value, byte channel = 0) 
         {
