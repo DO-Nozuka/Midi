@@ -37,7 +37,7 @@
         void OnUndefined1FMSB(MidiMessage message);
         /* 14Bit LSB */
         void OnBankSelectLSB(MidiMessage message);
-        void OnModulationWheelLSB(MidiMessage message);
+        void OnModulationLSB(MidiMessage message);
         void OnBreathControllerLSB(MidiMessage message);
         void OnUndefined03LSB(MidiMessage message);
         void OnFootControllerLSB(MidiMessage message);
