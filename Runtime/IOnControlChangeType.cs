@@ -96,7 +96,7 @@
         void OnUndefined57(MidiMessage message);
         void OnUndefined58(MidiMessage message);/// High Resolution Velocit(MidiMessage message);
         void OnUndefined59(MidiMessage message);
-        void OnUndefined60(MidiMessage message);
+        void OnUndefined5A(MidiMessage message);
         void OnEffects1Depth(MidiMessage message);
         void OnEffects2Depth(MidiMessage message);
         void OnEffects3Depth(MidiMessage message);
