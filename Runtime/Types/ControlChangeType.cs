@@ -100,7 +100,7 @@
         /// </summary>
         Undefined58 = 0x58,
         Undefined59 = 0x59,
-        Undefined60 = 0x5A,
+        Undefined5A = 0x5A,
         Effects1Depth = 0x5B,
         Effects2Depth = 0x5C,
         Effects3Depth = 0x5D,
