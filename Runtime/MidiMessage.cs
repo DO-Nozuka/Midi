@@ -1,4 +1,5 @@
 ﻿using Dono.Midi.Runtime.Types;
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -54,6 +55,22 @@ namespace Dono.Midi.Runtime
         /// StatusByteの下位4ビットを返します
         /// </summary>
         public byte Channel => StatusByteLower;
+        /// <summary>
+        /// SetTempoの値を返します
+        /// SetTempo以外では0を返します
+        /// </summary>
+        public float QuarterNoteLength
+        {
+            get
+            {
+                if (metaEventType != MetaEventType.SetTempo)
+                    return 0;
+
+                int value = (Bytes[3] << 16) + (Bytes[4] << 8) + (Bytes[5] << 0);
+
+                return value;
+            }
+        }
 
 
         #endregion
