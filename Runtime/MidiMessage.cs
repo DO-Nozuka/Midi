@@ -105,7 +105,37 @@ namespace Dono.Midi.Runtime
             // データのコピー
             int messageLength = 0;
 
-            switch (bytes[0] & 0xF0)
+            messageLength = GetMessageLength(bytes);
+
+            Bytes = new byte[messageLength];
+            for (int i = 0; i < messageLength; i++)
+            {
+                Bytes[i] = bytes[i];
+            }
+
+            // Typesの更新
+            if (isCorrectFormat)
+            {
+                UpdateMessageType();
+                UpdateChannelVoiceType();
+                UpdateControlChangeType();
+                UpdateChannelModeType();
+                UpdateSystemCommonType();
+                UpdateSystemRealTimeType();
+                UpdateMetaEventType();
+            }
+        }
+
+        /// <summary>
+        /// for MidiMessage
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static int GetMessageLength(byte[] data)
+        {
+            int messageLength = 0;
+
+            switch (data[0] & 0xF0)
             {
                 case 0x80:
                 case 0x90:
@@ -121,10 +151,16 @@ namespace Dono.Midi.Runtime
                     break;
 
                 case 0xF0:
-                    switch (bytes[0])
+                    switch (data[0])
                     {
                         case 0xF0:
-                            messageLength = bytes.Length;
+                            // SMF:  F0h <Length> <Data> F7h
+                            // MIDI: F0h <Data> F7h
+                            // <Length>は<Data>とF7hのバイト数
+                            // messageLengthは全体のバイト数
+                            // システムエクスクルーシブに限り
+                            // data.LengthをmessageLengthとする
+                            messageLength = data.Length;
                             break;
                         case 0xF1:
                             messageLength = 2;
@@ -149,32 +185,20 @@ namespace Dono.Midi.Runtime
                         case 0xFD:
                         case 0xFE:
                         case 0xFF:
-                            messageLength = 1;
+                            if(data.Length < 3)
+                                messageLength = 1;
+                            else
+                            {
+                                messageLength = data[2] + 3;
+                            }
                             break;
                     }
                     break;
                 default:
-                    Debug.Assert(false);
-                    break;
+                    throw new System.Exception();
             }
 
-            Bytes = new byte[messageLength];
-            for (int i = 0; i < messageLength; i++)
-            {
-                Bytes[i] = bytes[i];
-            }
-
-            // Typesの更新
-            if (isCorrectFormat)
-            {
-                UpdateMessageType();
-                UpdateChannelVoiceType();
-                UpdateControlChangeType();
-                UpdateChannelModeType();
-                UpdateSystemCommonType();
-                UpdateSystemRealTimeType();
-                UpdateMetaEventType();
-            }
+            return messageLength;
         }
 
         private void UpdateMessageType()
@@ -264,42 +288,58 @@ namespace Dono.Midi.Runtime
                 switch ((MetaEventType)Data1)
                 {
                     case MetaEventType.SequenceNumber:
+                        metaEventType = MetaEventType.SequenceNumber;
                         break;
                     case MetaEventType.TextEvent:
+                        metaEventType = MetaEventType.TextEvent;
                         break;
                     case MetaEventType.CopyrightNotice:
+                        metaEventType = MetaEventType.CopyrightNotice;
                         break;
                     case MetaEventType.SequenceAndTrackName:
+                        metaEventType = MetaEventType.SequenceAndTrackName;
                         break;
                     case MetaEventType.InstrumentName:
+                        metaEventType = MetaEventType.InstrumentName;
                         break;
                     case MetaEventType.Lyric:
+                        metaEventType = MetaEventType.Lyric;
                         break;
                     case MetaEventType.Marker:
+                        metaEventType = MetaEventType.Marker;
                         break;
                     case MetaEventType.CuePoint:
+                        metaEventType = MetaEventType.CuePoint;
                         break;
                     case MetaEventType.ChannelPrefix:
+                        metaEventType = MetaEventType.ChannelPrefix;
                         break;
                     case MetaEventType.PortPrefix:
+                        metaEventType = MetaEventType.PortPrefix;
                         break;
                     case MetaEventType.EndOfTrack:
+                        metaEventType = MetaEventType.EndOfTrack;
                         break;
                     case MetaEventType.SetTempo:
+                        metaEventType = MetaEventType.SetTempo;
                         break;
                     case MetaEventType.SMPTEOffset:
+                        metaEventType = MetaEventType.SMPTEOffset;
                         break;
                     case MetaEventType.TimeSignature:
+                        metaEventType = MetaEventType.TimeSignature;
                         break;
                     case MetaEventType.KeySignature:
+                        metaEventType = MetaEventType.KeySignature;
                         break;
                     case MetaEventType.SequencerSpecificMetaEvent:
+                        metaEventType = MetaEventType.SequencerSpecificMetaEvent;
                         break;
                     default:
                         metaEventType = MetaEventType.None;
                         break;
                 }
-            }
+            }   
             else
             {
                 metaEventType = MetaEventType.None;
