@@ -608,7 +608,7 @@ namespace Dono.Midi.Runtime
             changeBeatEvents.Sort((n, m) => n.Timing.TotalDeltaTime - m.Timing.TotalDeltaTime);
 
             // changeBeatEventsのMeasure/Tickを更新
-            changeBeatEvents[0].Timing.SetMeasureTick(0, 0);
+            changeBeatEvents[0].Timing.SetMeasureTick(1, 0);
 
             for (int i = 1; i < changeBeatEvents.Count; i++)
             {
@@ -640,7 +640,7 @@ namespace Dono.Midi.Runtime
                 if (smfEvent.Timing.TotalDeltaTime == changeBeatEvents[i].Timing.TotalDeltaTime)
                 {
                     // 同じ場合は計算せずに返す
-                    smfEvent.Timing.RealTime = changeBeatEvents[i].Timing.RealTime;
+                    smfEvent.Timing.SetMeasureTick(changeBeatEvents[i].Timing.Measure, changeBeatEvents[i].Timing.Tick);
                     return;
                 }
                 else if (smfEvent.Timing.TotalDeltaTime < changeBeatEvents[i].Timing.TotalDeltaTime)
