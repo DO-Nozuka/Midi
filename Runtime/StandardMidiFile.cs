@@ -287,10 +287,12 @@ namespace Dono.Midi.Runtime
                             // messageLengthは全体のバイト数
 
                             //SMFの場合のアルゴリズム
-                            int i = 1;
-                            int length = VariableLengthDataToInt32(data, ref i);
+                            int if0 = index + 1;
+                            int if0start = if0;
+                            int lengthf0 = VariableLengthDataToInt32(data, ref if0);
+                            int readByte = if0 - if0start;
 
-                            messageLength = 1 + (i - 1) + length;
+                            messageLength = 1 + readByte + lengthf0;
                             break;
                         case 0xF1:
                             messageLength = 2;
@@ -316,8 +318,13 @@ namespace Dono.Midi.Runtime
                         case 0xFE:
                             messageLength = 1;
                             break;
-                        case 0xFF:
-                            messageLength = data[index + 2] + 3;
+                        case 0xFF:  // 0xFF <type(1byte)> <length(variable)> <data(variable)>
+                            int iff = index + 2;
+                            int iffstart = iff;
+                            int lengthff = VariableLengthDataToInt32(data, ref iff);
+                            int readByteff = iff - iffstart;
+
+                            messageLength = 2 + readByteff + lengthff;
                             break;
                     }
                     break;
