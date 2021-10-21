@@ -264,7 +264,7 @@ namespace Dono.Midi.Runtime
         /// <param name="messageLength"></param>
         /// <param name="isSMF"></param>
         /// <returns></returns>
-        public static int GetMessageLength(byte[] data, int index)
+        public static int GetMessageLength(byte[] data, int index = 0)
         {
             int messageLength = 0;
 
@@ -384,7 +384,7 @@ namespace Dono.Midi.Runtime
 
         public static string GetTextEventInShiftJIS(MidiMessage message)
         {
-            var dataLength = GetMessageLength(message.Bytes, 2);
+            var dataLength = GetMessageLength(message.Bytes);
             byte[] data = new byte[dataLength];
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
@@ -394,7 +394,7 @@ namespace Dono.Midi.Runtime
 
         public static string GetMakerNameInShiftJIS(MidiMessage message)
         {
-            var dataLength = GetMessageLength(message.Bytes, 2);
+            var dataLength = GetMessageLength(message.Bytes);
             byte[] data = new byte[dataLength];
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
