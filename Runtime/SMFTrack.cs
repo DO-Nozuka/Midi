@@ -39,26 +39,19 @@ namespace Dono.Midi.Runtime
                 }
             }
 
-
-
             // TrackNameの取得
             foreach(var message in messages)
             {
                 if (message.Message.metaEventType == Types.MetaEventType.SequenceAndTrackName)
                 {
                     var bytes = message.Message.Bytes;
-
                     int index = 2;
-                    do index++;
-                    while ((bytes[index-1] & 0b10000000) == 1);
+                    int dataLength = StandardMidiFile.VariableLengthDataToInt32(bytes, ref index);
 
-                    var trackNameBytes = new byte[bytes.Length - index];
-                    Array.Copy(bytes, index, trackNameBytes, 0, trackNameBytes.Length);
+                    var trackNameBytes = new byte[dataLength];
+                    Array.Copy(bytes, index, trackNameBytes, 0, dataLength);
 
-                    for(int i = 0; i < trackNameBytes.Length; i++)
-                    {
-                        TrackName.Append((char)trackNameBytes[i]);
-                    }
+                    TrackName = System.Text.Encoding.GetEncoding("Shift_JIS").GetString(trackNameBytes);
                 }
             }
 
@@ -79,5 +72,6 @@ namespace Dono.Midi.Runtime
                 }
             }
         }
+
     }
 }

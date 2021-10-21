@@ -62,7 +62,7 @@ namespace Dono.Midi.Runtime
             Scores = new List<SMFScore>();
             foreach (var track in tracks)
             {                
-                var samePortScore = Scores.Find((s) => s.PortNum == track.Port);
+                var samePortScore = Scores.Find((s) => s.Port == track.Port);
                 switch (track.TrackType)
                 {
                     case SMFTrackType.Conductor:
@@ -71,7 +71,9 @@ namespace Dono.Midi.Runtime
                     case SMFTrackType.ScoreSetup:
                         if (samePortScore == null)
                         {
-                            Scores.Add(new SMFScore());
+                            var ssScore = new SMFScore();
+                            ssScore.AddTrack(track);
+                            Scores.Add(ssScore);
                         }
                         else
                         {
@@ -81,10 +83,14 @@ namespace Dono.Midi.Runtime
                     case SMFTrackType.Part:
                         if (samePortScore == null)
                         {
-                            samePortScore = new SMFScore();
-                            Scores.Add(samePortScore);
+                            var pScore = new SMFScore();
+                            pScore.AddTrack(track);
+                            Scores.Add(pScore);
                         }
-                        samePortScore.PartTracks.Add(track);
+                        else
+                        {
+                            samePortScore.PartTracks.Add(track);
+                        }
                         break;
                 }
             }
