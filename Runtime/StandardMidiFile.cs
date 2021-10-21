@@ -340,5 +340,66 @@ namespace Dono.Midi.Runtime
 
             return messageLength;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name">Mark name</param>
+        /// <returns>First found value</returns>
+        public static float GetMarkTiming(SMFTrack conductorTrack, string name)
+        {
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.Marker);
+
+            foreach (var message in messages)
+            {
+                string str = GetMakerNameInShiftJIS(message.Message);
+                if (str == name)
+                    return message.Timing.RealTime;
+            }
+
+            return 0.0f;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name">variable name</param>
+        /// <returns>variable name(when not found, return "")</returns>
+        public static string GetTextEventVariable(SMFTrack conductorTrack, string name)
+        {
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Dono.Midi.Runtime.Types.MetaEventType.TextEvent);
+
+            foreach (var message in messages)
+            {
+                string str = GetTextEventInShiftJIS(message.Message);
+
+                if (str.StartsWith($"{name}="))
+                {
+                    return GetTextEventInShiftJIS(message.Message).Substring(name.Length + 1);
+                }
+            }
+
+            return "";
+        }
+
+        public static string GetTextEventInShiftJIS(MidiMessage message)
+        {
+            var dataLength = GetMessageLength(message.Bytes, 2);
+            byte[] data = new byte[dataLength];
+            int startIndex = message.Bytes.Length - dataLength;
+            Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
+
+            return Encoding.GetEncoding("Shift_JIS").GetString(data);
+        }
+
+        public static string GetMakerNameInShiftJIS(MidiMessage message)
+        {
+            var dataLength = GetMessageLength(message.Bytes, 2);
+            byte[] data = new byte[dataLength];
+            int startIndex = message.Bytes.Length - dataLength;
+            Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
+
+            return Encoding.GetEncoding("Shift_JIS").GetString(data);
+        }
     }
 }
