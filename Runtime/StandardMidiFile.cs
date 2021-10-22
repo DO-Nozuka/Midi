@@ -259,16 +259,17 @@ namespace Dono.Midi.Runtime
 
         /// <summary>
         /// For SMF MidiMessage
+        /// include Status Byte
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="messageBytes"></param>
         /// <param name="messageLength"></param>
         /// <param name="isSMF"></param>
         /// <returns></returns>
-        public static int GetMessageLength(byte[] data, int index = 0)
+        public static int GetMessageLength(byte[] messageBytes, int index = 0)
         {
             int messageLength = 0;
 
-            switch (data[index] & 0xF0)
+            switch (messageBytes[index] & 0xF0)
             {
                 case 0x80:
                 case 0x90:
@@ -284,7 +285,7 @@ namespace Dono.Midi.Runtime
                     break;
 
                 case 0xF0:
-                    switch (data[index])
+                    switch (messageBytes[index])
                     {
                         case 0xF0:
                             // SMF:  F0h <Length> <Data> F7h
@@ -295,7 +296,7 @@ namespace Dono.Midi.Runtime
                             //SMFの場合のアルゴリズム
                             int if0 = index + 1;
                             int if0start = if0;
-                            int lengthf0 = VariableLengthDataToInt32(data, ref if0);
+                            int lengthf0 = VariableLengthDataToInt32(messageBytes, ref if0);
                             int readByte = if0 - if0start;
 
                             messageLength = 1 + readByte + lengthf0;
@@ -327,7 +328,7 @@ namespace Dono.Midi.Runtime
                         case 0xFF:  // 0xFF <type(1byte)> <length(variable)> <data(variable)>
                             int iff = index + 2;
                             int iffstart = iff;
-                            int lengthff = VariableLengthDataToInt32(data, ref iff);
+                            int lengthff = VariableLengthDataToInt32(messageBytes, ref iff);
                             int readByteff = iff - iffstart;
 
                             messageLength = 2 + readByteff + lengthff;
@@ -339,6 +340,90 @@ namespace Dono.Midi.Runtime
             }
 
             return messageLength;
+        }
+
+        /// <summary>
+        /// For SMF MidiMessage
+        /// without Status Byte and &lt;length &gt;
+        /// </summary>
+        /// <param name="messageBytes"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static int GetDataLength(byte[] messageBytes, int index = 0)
+        {
+            int dataLength = 0;
+
+            switch (messageBytes[index] & 0xF0)
+            {
+                case 0x80:
+                case 0x90:
+                case 0xA0:
+                case 0xB0:
+                case 0xE0:
+                    dataLength = 2;
+                    break;
+
+                case 0xC0:
+                case 0xD0:
+                    dataLength = 1;
+                    break;
+
+                case 0xF0:
+                    switch (messageBytes[index])
+                    {
+                        case 0xF0:
+                            // SMF:  F0h <Length> <Data> F7h
+                            // MIDI: F0h <Data> F7h
+                            // <Length>は<Data>とF7hのバイト数
+                            // messageLengthは全体のバイト数
+
+                            //SMFの場合のアルゴリズム
+                            int if0 = index + 1;
+                            int if0start = if0;
+                            int lengthf0 = VariableLengthDataToInt32(messageBytes, ref if0);
+                            int readByte = if0 - if0start;
+
+                            dataLength = lengthf0;
+                            break;
+                        case 0xF1:
+                            dataLength = 1;
+                            break;
+                        case 0xF2:
+                            dataLength = 2;
+                            break;
+                        case 0xF3:
+                            dataLength = 1;
+                            break;
+                        case 0xF4:
+                        case 0xF5:
+                        case 0xF6:
+                        case 0xF7:
+                            dataLength = 0;
+                            break;
+                        case 0xF8:
+                        case 0xF9:
+                        case 0xFA:
+                        case 0xFB:
+                        case 0xFC:
+                        case 0xFD:
+                        case 0xFE:
+                            dataLength = 0;
+                            break;
+                        case 0xFF:  // 0xFF <type(1byte)> <length(variable)> <data(variable)>
+                            int iff = index + 2;
+                            int iffstart = iff;
+                            int lengthff = VariableLengthDataToInt32(messageBytes, ref iff);
+                            int readByteff = iff - iffstart;
+
+                            dataLength = lengthff;
+                            break;
+                    }
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            return dataLength;
         }
 
         /// <summary>
@@ -367,7 +452,7 @@ namespace Dono.Midi.Runtime
         /// <returns>variable name(when not found, return "")</returns>
         public static string GetTextEventVariable(SMFTrack conductorTrack, string name)
         {
-            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Dono.Midi.Runtime.Types.MetaEventType.TextEvent);
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.TextEvent);
 
             foreach (var message in messages)
             {
@@ -384,7 +469,7 @@ namespace Dono.Midi.Runtime
 
         public static string GetTextEventInShiftJIS(MidiMessage message)
         {
-            var dataLength = GetMessageLength(message.Bytes);
+            var dataLength = GetDataLength(message.Bytes);
             byte[] data = new byte[dataLength];
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
@@ -394,7 +479,7 @@ namespace Dono.Midi.Runtime
 
         public static string GetMakerNameInShiftJIS(MidiMessage message)
         {
-            var dataLength = GetMessageLength(message.Bytes);
+            var dataLength = GetDataLength(message.Bytes);
             byte[] data = new byte[dataLength];
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
