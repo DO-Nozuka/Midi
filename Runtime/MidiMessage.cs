@@ -85,36 +85,36 @@ namespace Dono.Midi.Runtime
         #endregion
 
 
-        internal MidiMessage(byte status)
+        internal MidiMessage(byte status, bool isSMF = false)
         {
             byte[] bytes = { status };
-            Initialize(bytes);
+            Initialize(bytes, isSMF);
         }
-        internal MidiMessage(byte status, byte data1)
+        internal MidiMessage(byte status, byte data1, bool isSMF = false)
         {
             byte[] bytes = { status, data1 };
-            Initialize(bytes);
+            Initialize(bytes, isSMF);
         }
-        internal MidiMessage(byte status, byte data1, byte data2)
+        internal MidiMessage(byte status, byte data1, byte data2, bool isSMF = false)
         {
             byte[] bytes = { status, data1, data2 };
-            Initialize(bytes);
+            Initialize(bytes, isSMF);
         }
         /// <summary>
         /// byte[]にて初期化します
         /// </summary>
         /// <param name="bytes">ステータスバイトとデータバイトを含むデータ列</param>
-        internal MidiMessage(byte[] bytes)
+        internal MidiMessage(byte[] bytes, bool isSMF = false)
         {
-            Initialize(bytes);
+            Initialize(bytes, isSMF);
         }
-        internal MidiMessage(MidiMessage message)
+        internal MidiMessage(MidiMessage message, bool isSMF = false)
         {
             byte[] bytes = message.Bytes;
-            Initialize(bytes);
+            Initialize(bytes, isSMF);
         }
 
-        private void Initialize(byte[] bytes)
+        private void Initialize(byte[] bytes, bool isSMF = false)
         {
             if (bytes.Length == 0)
                 return;
@@ -122,7 +122,7 @@ namespace Dono.Midi.Runtime
             // データのコピー
             int messageLength = 0;
 
-            messageLength = GetMessageLength(bytes);
+            messageLength = GetMessageLength(bytes, isSMF: isSMF);
 
             Bytes = new byte[messageLength];
             for (int i = 0; i < messageLength; i++)
@@ -143,16 +143,20 @@ namespace Dono.Midi.Runtime
             }
         }
 
+
+
         /// <summary>
-        /// for MidiMessage
+        /// include Status Byte
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="messageBytes"></param>
+        /// <param name="messageLength"></param>
+        /// <param name="isSMF"></param>
         /// <returns></returns>
-        public static int GetMessageLength(byte[] data)
+        public static int GetMessageLength(byte[] messageBytes, int index = 0, bool isSMF = false)
         {
             int messageLength = 0;
 
-            switch (data[0] & 0xF0)
+            switch (messageBytes[index] & 0xF0)
             {
                 case 0x80:
                 case 0x90:
@@ -168,16 +172,34 @@ namespace Dono.Midi.Runtime
                     break;
 
                 case 0xF0:
-                    switch (data[0])
+                    switch (messageBytes[index])
                     {
                         case 0xF0:
                             // SMF:  F0h <Length> <Data> F7h
-                            // MIDI: F0h <Data> F7h
                             // <Length>は<Data>とF7hのバイト数
                             // messageLengthは全体のバイト数
-                            // システムエクスクルーシブに限り
-                            // data.LengthをmessageLengthとする
-                            messageLength = data.Length;
+                            if (isSMF)
+                            {
+                                //SMFの場合のアルゴリズム
+                                int if0 = index + 1;
+                                int if0start = if0;
+                                int lengthf0 = StandardMidiFile.VariableLengthDataToInt32(messageBytes, ref if0);
+                                int readByte = if0 - if0start;
+
+                                messageLength = 1 + readByte + lengthf0;
+                            }
+                            else
+                            {
+                                // MIDI: F0h <Data> F7h
+                                for (int i = 0; i < messageBytes.Length; i++)
+                                {
+                                    if (messageBytes[i] == 0xF7)
+                                    {
+                                        messageLength = i;
+                                        break;
+                                    }
+                                }
+                            }
                             break;
                         case 0xF1:
                             messageLength = 2;
@@ -201,18 +223,136 @@ namespace Dono.Midi.Runtime
                         case 0xFC:
                         case 0xFD:
                         case 0xFE:
+                            messageLength = 1;
+                            break;
                         case 0xFF:
-                            if(data.Length < 3)
-                                messageLength = 1;
+                            if (isSMF)
+                            {
+                                // MetaEvent
+                                // 0xFF <type(1byte)> <length(variable)> <data(variable)>
+                                int iff = index + 2;
+                                int iffstart = iff;
+                                int lengthff = StandardMidiFile.VariableLengthDataToInt32(messageBytes, ref iff);
+                                int readByteff = iff - iffstart;
+
+                                messageLength = 2 + readByteff + lengthff;
+                            }
                             else
                             {
-                                messageLength = data[2] + 3;
+                                // SystemReset
+                                messageLength = 1;
                             }
                             break;
                     }
                     break;
                 default:
-                    throw new System.Exception();
+                    throw new Exception();
+            }
+
+            return messageLength;
+        }
+        /// <summary>
+        /// without Status Byte
+        /// </summary>
+        /// <param name="messageBytes"></param>
+        /// <param name="messageLength"></param>
+        /// <param name="isSMF"></param>
+        /// <returns></returns>
+        public static int GetDataLength(byte[] messageBytes, int index = 0, bool isSMF = false)
+        {
+            int messageLength = 0;
+
+            switch (messageBytes[index] & 0xF0)
+            {
+                case 0x80:
+                case 0x90:
+                case 0xA0:
+                case 0xB0:
+                case 0xE0:
+                    messageLength = 2;
+                    break;
+
+                case 0xC0:
+                case 0xD0:
+                    messageLength = 1;
+                    break;
+
+                case 0xF0:
+                    switch (messageBytes[index])
+                    {
+                        case 0xF0:
+                            // SMF:  F0h <Length> <Data> F7h
+                            // <Length>は<Data>とF7hのバイト数
+                            // messageLengthは全体のバイト数
+                            if (isSMF)
+                            {
+                                //SMFの場合のアルゴリズム
+                                int if0 = index + 1;
+                                int if0start = if0;
+                                int lengthf0 = StandardMidiFile.VariableLengthDataToInt32(messageBytes, ref if0);
+                                int readByte = if0 - if0start;
+
+                                messageLength = lengthf0 - 1;   //F7hを除いた<Data>のみの長さ
+                            }
+                            else
+                            {
+                                // MIDI: F0h <Data> F7h
+                                for (int i = 0; i < messageBytes.Length; i++)
+                                {
+                                    if (messageBytes[i] == 0xF7)
+                                    {
+                                        messageLength = i - 1;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        case 0xF1:
+                            messageLength = 1;
+                            break;
+                        case 0xF2:
+                            messageLength = 2;
+                            break;
+                        case 0xF3:
+                            messageLength = 1;
+                            break;
+                        case 0xF4:
+                        case 0xF5:
+                        case 0xF6:
+                        case 0xF7:
+                            messageLength = 0;
+                            break;
+                        case 0xF8:
+                        case 0xF9:
+                        case 0xFA:
+                        case 0xFB:
+                        case 0xFC:
+                        case 0xFD:
+                        case 0xFE:
+                            messageLength = 0;
+                            break;
+                        case 0xFF:
+                            if (isSMF)
+                            {
+                                // MetaEvent
+                                // 0xFF <type(1byte)> <length(variable)> <data(variable)>
+                                int iff = index + 2;
+                                int iffstart = iff;
+                                int lengthff = StandardMidiFile.VariableLengthDataToInt32(messageBytes, ref iff);
+                                int readByteff = iff - iffstart;
+
+                                messageLength = lengthff;
+                            }
+                            else
+                            {
+                                // SystemReset
+                                messageLength = 0;
+                            }
+                            break;
+                    }
+                    break;
+                default:
+                    throw new Exception();
             }
 
             return messageLength;
