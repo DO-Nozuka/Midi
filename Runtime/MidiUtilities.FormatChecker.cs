@@ -27,12 +27,22 @@
                 return false;
             if ((bytes[0] & 0b10000000) != 0b10000000)
                 return false;
-            for(int i = 1; i < bytes.Length; i++)
+            if (bytes[0] == 0xF0 || bytes[0] == 0xFF)
             {
-                if((bytes[i] & 0b10000000) != 0b00000000)
+                // TODO とりあえず先頭2バイトだけチェック、それ以降はisSMFで場合分けが必要
+                if (bytes.Length < 3)
+                    return false;
+                if ((bytes[1] & 0b10000000) != 0b00000000)
                     return false;
             }
-
+            else
+            {
+                for (int i = 1; i < bytes.Length; i++)
+                {
+                    if ((bytes[i] & 0b10000000) != 0b00000000)
+                        return false;
+                }
+            }
             return true;
         }
 
