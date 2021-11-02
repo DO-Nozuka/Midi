@@ -318,5 +318,38 @@ namespace Dono.Midi.Runtime
 
             return Encoding.GetEncoding("Shift_JIS").GetString(data);
         }
+
+        public static float GetMaxBPM(SMFTrack conductorTrack)
+        {
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+
+            int minUSPB = 0b11111111_11111111_11111111;
+            foreach(var message in messages)
+            {
+                int uspb = (message.Message.Bytes[3] << 16) + (message.Message.Bytes[4] << 8) + (message.Message.Bytes[5] << 0);
+
+                if(uspb < minUSPB)
+                    minUSPB = uspb;
+            }
+
+            float maxBPM = (60_000_000) / minUSPB;
+            return maxBPM;
+        }
+
+        public static float GetMinBPM(SMFTrack conductorTrack)
+        {
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+            int maxUSPB = 0b00000000_00000000_00000000;
+            foreach(var message in messages)
+            {
+                int uspb = (message.Message.Bytes[3] << 16) + (message.Message.Bytes[4] << 8) + (message.Message.Bytes[5] << 0);
+
+                if(uspb > maxUSPB)
+                    maxUSPB = uspb;
+            }
+
+            float minBPM = (60_000_000) / maxUSPB;
+            return minBPM;
+        }
     }
 }
