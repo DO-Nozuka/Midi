@@ -301,7 +301,7 @@ namespace Dono.Midi.Runtime
 
         public static string GetTextEventInShiftJIS(MidiMessage message)
         {
-            var dataLength = MidiMessage.GetDataLength(message.Bytes);
+            var dataLength = MidiMessage.GetDataLength(message.Bytes, 0, true);
             byte[] data = new byte[dataLength];
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
@@ -311,7 +311,7 @@ namespace Dono.Midi.Runtime
 
         public static string GetMakerNameInShiftJIS(MidiMessage message)
         {
-            var dataLength = MidiMessage.GetDataLength(message.Bytes);
+            var dataLength = MidiMessage.GetDataLength(message.Bytes, 0, true);
             byte[] data = new byte[dataLength];
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);

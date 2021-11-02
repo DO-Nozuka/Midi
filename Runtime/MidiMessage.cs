@@ -258,7 +258,7 @@ namespace Dono.Midi.Runtime
         /// <param name="messageLength"></param>
         /// <param name="isSMF"></param>
         /// <returns></returns>
-        public static int GetDataLength(byte[] messageBytes, int index = 0, bool isSMF = false)
+        public static int GetDataLength(byte[] messageBytes, int index, bool isSMF)
         {
             int messageLength = 0;
 
