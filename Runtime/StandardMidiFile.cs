@@ -334,8 +334,7 @@ namespace Dono.Midi.Runtime
                     minUSPB = uspb;
             }
 
-            float maxBPM = (60_000_000) / minUSPB;
-            return maxBPM;
+            return MicroSecPerBeatToBPM(minUSPB);
         }
 
         public static float GetMinBPM(SMFTrack conductorTrack)
@@ -350,8 +349,7 @@ namespace Dono.Midi.Runtime
                     maxUSPB = uspb;
             }
 
-            float minBPM = (60_000_000) / maxUSPB;
-            return minBPM;
+            return MicroSecPerBeatToBPM(maxUSPB);
         }
 
         public static float GetBPM(SMFTrack conductorTrack, int totalDeltaTime)
@@ -367,7 +365,7 @@ namespace Dono.Midi.Runtime
             }
 
             int uspb = (tempoChange.Message.Bytes[3] << 16) + (tempoChange.Message.Bytes[4] << 8) + (tempoChange.Message.Bytes[5] << 0);
-            return (60_000_000) / uspb;
+            return MicroSecPerBeatToBPM(uspb);
         }
 
         public static List<SMFEvent> GetBPMChangeEvents(SMFTrack conductorTrack, int frontTotalDeltaTime, int rearTotalDeltaTime)
@@ -375,6 +373,16 @@ namespace Dono.Midi.Runtime
             return conductorTrack.Messages.FindAll((n) =>
             n.Message.metaEventType == Types.MetaEventType.SetTempo 
             && frontTotalDeltaTime <= n.Timing.TotalDeltaTime && n.Timing.TotalDeltaTime < rearTotalDeltaTime);
+        }
+
+        public static float MicroSecPerBeatToBPM(int microSec)
+        {
+            return 60_000_000 / microSec;
+        }
+
+        public static int BPMToMicroSecPerBeat(float BPM)
+        { 
+            return (int)Math.Round(60_000_000 / (float)BPM, 1, MidpointRounding.AwayFromZero);
         }
     }
 }
