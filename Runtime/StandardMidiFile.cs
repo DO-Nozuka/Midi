@@ -13,6 +13,7 @@ namespace Dono.Midi.Runtime
         public List<SMFScore> Scores;
 
         private bool IsDebugMode = true;
+        private int division = 0;
 
         public StandardMidiFile(byte[] data)
         {
@@ -24,6 +25,7 @@ namespace Dono.Midi.Runtime
             // ヘッダーチャンク
             if (IsDebugMode) Debug.Log("[SMF]Start InitHeaderChunk.");
             InitHeaderChunk(data, ref _index, out Info);
+            division = Info.Division;
 
             // Trackを全てTracksに格納する
             if (IsDebugMode) Debug.Log("[SMF]Start to load tracks.");
@@ -43,7 +45,7 @@ namespace Dono.Midi.Runtime
             if (IsDebugMode) Debug.Log($"[SMF]Start to Get TimingEvent.");
             List<SMFEvent> tempoEvents = ConductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
             List<SMFEvent> changeBeatEvents = ConductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.TimeSignature);
-            int division = Info.Division;
+
             if (IsDebugMode) Debug.Log($"[SMF]Start to InitializeTimingEvents.");
             SMFTiming.InitializeTimingEvents(tempoEvents, changeBeatEvents, division);
 
@@ -203,7 +205,7 @@ namespace Dono.Midi.Runtime
                 //デルタタイムの取得
                 int deltaTime = VariableLengthDataToInt32(data, ref index);
                 totalDeltaTime += deltaTime;
-                SMFTiming timing = new SMFTiming(totalDeltaTime);
+                SMFTiming timing = new SMFTiming(totalDeltaTime, division);
 
                 //イベントの取得
                 int dataLength = MidiMessage.GetMessageLength(data, index, true);
