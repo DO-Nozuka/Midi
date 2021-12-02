@@ -352,6 +352,12 @@ namespace Dono.Midi.Runtime
             return MicroSecPerBeatToBPM(maxUSPB);
         }
 
+        /// <summary>
+        /// 指定されたtotalDeltaTimeでのBPMを返します
+        /// </summary>
+        /// <param name="conductorTrack"></param>
+        /// <param name="totalDeltaTime"></param>
+        /// <returns></returns>
         public static float GetBPM(SMFTrack conductorTrack, int totalDeltaTime)
         {
             var tempoChages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
@@ -368,11 +374,33 @@ namespace Dono.Midi.Runtime
             return MicroSecPerBeatToBPM(uspb);
         }
 
+        /// <summary>
+        /// frontTotalDeltaTime直前のBPM変化から
+        /// rearTotalDeltaTime直前のBPM変化までのSetTempoEventListを返します
+        /// </summary>
+        /// <param name="conductorTrack"></param>
+        /// <param name="frontTotalDeltaTime"></param>
+        /// <param name="rearTotalDeltaTime"></param>
+        /// <returns></returns>
         public static List<SMFEvent> GetBPMChangeEvents(SMFTrack conductorTrack, int frontTotalDeltaTime, int rearTotalDeltaTime)
         {
-            return conductorTrack.Messages.FindAll((n) =>
-            n.Message.metaEventType == Types.MetaEventType.SetTempo 
-            && frontTotalDeltaTime <= n.Timing.TotalDeltaTime && n.Timing.TotalDeltaTime < rearTotalDeltaTime);
+            var result = new List<SMFEvent>();
+
+            var tempoChages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+
+            SMFEvent tempoChange = tempoChages[0];
+            for (int i = 1; i < tempoChages.Count; i++)
+            {
+                if (tempoChages[i].Timing.TotalDeltaTime <= frontTotalDeltaTime)
+                    tempoChange = tempoChages[i];
+            }
+
+            result.Add(tempoChange);
+            result.AddRange(conductorTrack.Messages.FindAll((n) =>
+            n.Message.metaEventType == Types.MetaEventType.SetTempo
+            && frontTotalDeltaTime < n.Timing.TotalDeltaTime && n.Timing.TotalDeltaTime < rearTotalDeltaTime));
+
+            return result;
         }
 
         public static float MicroSecPerBeatToBPM(int microSec)
