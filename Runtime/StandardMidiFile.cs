@@ -353,5 +353,28 @@ namespace Dono.Midi.Runtime
             float minBPM = (60_000_000) / maxUSPB;
             return minBPM;
         }
+
+        public static float GetBPM(SMFTrack conductorTrack, int totalDeltaTime)
+        {
+            var tempoChages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+
+            SMFEvent tempoChange = tempoChages[0];
+
+            for (int i = 1; i < tempoChages.Count; i++)
+            {
+                if(tempoChages[i].Timing.TotalDeltaTime <= totalDeltaTime)
+                    tempoChange = tempoChages[i];
+            }
+
+            int uspb = (tempoChange.Message.Bytes[3] << 16) + (tempoChange.Message.Bytes[4] << 8) + (tempoChange.Message.Bytes[5] << 0);
+            return (60_000_000) / uspb;
+        }
+
+        public static List<SMFEvent> GetBPMChangeEvents(SMFTrack conductorTrack, int frontTotalDeltaTime, int rearTotalDeltaTime)
+        {
+            return conductorTrack.Messages.FindAll((n) =>
+            n.Message.metaEventType == Types.MetaEventType.SetTempo 
+            && frontTotalDeltaTime <= n.Timing.TotalDeltaTime && n.Timing.TotalDeltaTime < rearTotalDeltaTime);
+        }
     }
 }
