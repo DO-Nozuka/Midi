@@ -17,10 +17,12 @@ namespace Dono.Midi.Runtime
         public float RealTime { get; private set; }
 
         public int TotalDeltaTime { get; private set; }
+        public int Division { get; private set; }
 
-        public SMFTiming(int totalDeltaTime)
+        public SMFTiming(int totalDeltaTime, int division)
         {
             TotalDeltaTime = totalDeltaTime;
+            Division = division;
         }
 
         private void SetMeasureTick(int measure, int tick)
