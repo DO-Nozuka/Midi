@@ -4,8 +4,9 @@ namespace Dono.Midi.Runtime
 {
     public class SMFScore
     {
-        public SMFTrack ScoreSetupTrack;
-        public List<SMFTrack> PartTracks = new List<SMFTrack>();
+        public SMFTrack ConductorTrack { get; private set; }
+        public SMFTrack ScoreSetupTrack { get; private set; }
+        public List<SMFTrack> PartTracks { get; private set; } = new List<SMFTrack>();
 
         public int Port { get; internal set; } = int.MinValue;
 
@@ -21,6 +22,11 @@ namespace Dono.Midi.Runtime
                 ScoreSetupTrack = track;
             else
                 PartTracks.Add(track);
+        }
+
+        public SMFScore(SMFTrack conductorTrack)
+        {
+            ConductorTrack = conductorTrack;
         }
     }
 }

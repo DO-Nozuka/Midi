@@ -73,25 +73,25 @@ namespace Dono.Midi.Runtime
                     case SMFTrackType.ScoreSetup:
                         if (samePortScore == null)
                         {
-                            var ssScore = new SMFScore();
+                            var ssScore = new SMFScore(ConductorTrack);
                             ssScore.AddTrack(track);
                             Scores.Add(ssScore);
                         }
                         else
                         {
-                            samePortScore.ScoreSetupTrack = track;
+                            samePortScore.AddTrack(track);
                         }
                         break;
                     case SMFTrackType.Part:
                         if (samePortScore == null)
                         {
-                            var pScore = new SMFScore();
+                            var pScore = new SMFScore(ConductorTrack);
                             pScore.AddTrack(track);
                             Scores.Add(pScore);
                         }
                         else
                         {
-                            samePortScore.PartTracks.Add(track);
+                            samePortScore.AddTrack(track);
                         }
                         break;
                 }
