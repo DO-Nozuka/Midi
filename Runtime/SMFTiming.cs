@@ -25,6 +25,12 @@ namespace Dono.Midi.Runtime
             Division = division;
         }
 
+        public SMFTiming(int totalDeltaTime, int division, List<SMFEvent> tempoEvents, List<SMFEvent> changeBeatEvents) : this(totalDeltaTime, division)
+        {
+            UpdateRealTime(this, tempoEvents, division);
+            UpdateMeasureTick(this, changeBeatEvents, division);
+        }
+
         private void SetMeasureTick(int measure, int tick)
         {
             Measure = measure;
@@ -120,34 +126,40 @@ namespace Dono.Midi.Runtime
             if (smfEvent == null)
                 throw new FormatException();
 
+
+            UpdateRealTime(smfEvent.Timing, tempoEvents, division);
+        }
+
+        private static void UpdateRealTime(SMFTiming smfTiming, List<SMFEvent> tempoEvents, int division)
+        {
             // 値の範囲チェック
-            if (smfEvent.Timing.TotalDeltaTime < 0)
+            if (smfTiming.TotalDeltaTime < 0)
                 throw new FormatException();
 
             // 一番近いTempoを見つける
             SMFEvent nearestTimingEvent = tempoEvents[tempoEvents.Count - 1];
-            for(int i = 0; i < tempoEvents.Count; i++)
+            for (int i = 0; i < tempoEvents.Count; i++)
             {
-                if(smfEvent.Timing.TotalDeltaTime == tempoEvents[i].Timing.TotalDeltaTime)
+                if (smfTiming.TotalDeltaTime == tempoEvents[i].Timing.TotalDeltaTime)
                 {
                     // 同じ場合は計算せずに返す
-                    smfEvent.Timing.RealTime = tempoEvents[i].Timing.RealTime;
+                    smfTiming.RealTime = tempoEvents[i].Timing.RealTime;
                     return;
                 }
-                else if(smfEvent.Timing.TotalDeltaTime < tempoEvents[i].Timing.TotalDeltaTime)
-                {   
-                    nearestTimingEvent = tempoEvents[i-1];
+                else if (smfTiming.TotalDeltaTime < tempoEvents[i].Timing.TotalDeltaTime)
+                {
+                    nearestTimingEvent = tempoEvents[i - 1];
                     break;
-                }    
+                }
             }
 
             // 一番近いTempoとの差分を計算する
             var QuarterNoteLength = nearestTimingEvent.Message.QuarterNoteLength;
-            float diffDeltaTime = smfEvent.Timing.TotalDeltaTime - nearestTimingEvent.Timing.TotalDeltaTime;
+            float diffDeltaTime = smfTiming.TotalDeltaTime - nearestTimingEvent.Timing.TotalDeltaTime;
             float diffQuarterNoteCount = diffDeltaTime / division;
             float diffRealTime = diffQuarterNoteCount * QuarterNoteLength;
 
-            smfEvent.Timing.RealTime = nearestTimingEvent.Timing.RealTime + diffRealTime;
+            smfTiming.RealTime = nearestTimingEvent.Timing.RealTime + diffRealTime;
         }
 
         /* Update MeasureTick */
@@ -190,36 +202,41 @@ namespace Dono.Midi.Runtime
             if (smfEvent == null)
                 throw new FormatException();
 
+            UpdateMeasureTick(smfEvent.Timing, changeBeatEvents, division);
+        }
+
+        private static void UpdateMeasureTick(SMFTiming smfTiming, List<SMFEvent> changeBeatEvents, int division)
+        {
             // 値の範囲チェック
-            if (smfEvent.Timing.TotalDeltaTime < 0)
+            if (smfTiming.TotalDeltaTime < 0)
                 throw new FormatException();
 
             // 一番近いchangeBeatEventを見つける
             SMFEvent nearestChangeBeatEvent = changeBeatEvents[changeBeatEvents.Count - 1];
             for (int i = 0; i < changeBeatEvents.Count; i++)
             {
-                if (smfEvent.Timing.TotalDeltaTime == changeBeatEvents[i].Timing.TotalDeltaTime)
+                if (smfTiming.TotalDeltaTime == changeBeatEvents[i].Timing.TotalDeltaTime)
                 {
                     // 同じ場合は計算せずに返す
-                    smfEvent.Timing.SetMeasureTick(changeBeatEvents[i].Timing.Measure, changeBeatEvents[i].Timing.Tick);
+                    smfTiming.SetMeasureTick(changeBeatEvents[i].Timing.Measure, changeBeatEvents[i].Timing.Tick);
                     return;
                 }
-                else if (smfEvent.Timing.TotalDeltaTime < changeBeatEvents[i].Timing.TotalDeltaTime)
+                else if (smfTiming.TotalDeltaTime < changeBeatEvents[i].Timing.TotalDeltaTime)
                 {
-                    nearestChangeBeatEvent = changeBeatEvents[i-1];
+                    nearestChangeBeatEvent = changeBeatEvents[i - 1];
                     break;
                 }
             }
 
             // 一番近い changeBeatEvents との差分を計算する
-            int diffDeltaTime = smfEvent.Timing.TotalDeltaTime - nearestChangeBeatEvent.Timing.TotalDeltaTime + nearestChangeBeatEvent.Timing.Tick;
+            int diffDeltaTime = smfTiming.TotalDeltaTime - nearestChangeBeatEvent.Timing.TotalDeltaTime + nearestChangeBeatEvent.Timing.Tick;
             int oneMeasureTime = (int)((nearestChangeBeatEvent.Message.Bytes[3] / Math.Pow(2, nearestChangeBeatEvent.Message.Bytes[4])) * 4 * division);
 
             int diffMeasure = diffDeltaTime / oneMeasureTime;
             int measure = nearestChangeBeatEvent.Timing.Measure + diffMeasure;
             int tick = diffDeltaTime - (oneMeasureTime * diffMeasure);
-                        
-            smfEvent.Timing.SetMeasureTick(measure, tick);
+
+            smfTiming.SetMeasureTick(measure, tick);
         }
 
 
