@@ -56,7 +56,7 @@ namespace Dono.Midi.Runtime
             }
 
             // TrackTypeの取得
-            if (TrackName == "Score Setup")
+            if (TrackName == "Score Setup" || TrackName == "Partitura Setup")
                 TrackType = SMFTrackType.ScoreSetup;
             else if (messages.Find((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo || n.Message.metaEventType == Types.MetaEventType.TimeSignature) != null)
                 TrackType = SMFTrackType.Conductor;
