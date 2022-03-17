@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 namespace Dono.Midi.Runtime
 {
-    public partial class MidiMessage
+    public class MidiMessage
     {
         internal bool isCorrectFormat => MidiUtilities.IsCorrectFormat(Bytes);
 
@@ -82,6 +82,7 @@ namespace Dono.Midi.Runtime
         public SystemCommonType systemCommonType = SystemCommonType.None;
         public SystemRealTimeType systemRealtimeType = SystemRealTimeType.None;
         public MetaEventType metaEventType = MetaEventType.None;
+        public bool IsChannelMessage => messageType == MessageType.ChannelMode || messageType == MessageType.ChannelVoice;
         #endregion
 
 
