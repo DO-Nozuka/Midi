@@ -1,9 +1,9 @@
-﻿using Dono.Midi.Runtime.Types;
+﻿using Dono.Midi.Types;
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Dono.Midi.Runtime
+namespace Dono.Midi
 {
     public class MidiMessage
     {
