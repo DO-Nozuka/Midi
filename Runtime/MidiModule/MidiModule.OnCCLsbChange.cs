@@ -19,49 +19,49 @@ namespace Dono.Midi
         private void onBankSelectLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.BankSelect.SetMsb(message.Data2);
-            OnBankSelectChange(message);
+            onBankSelectChange(message);
             
             OnBankSelectLSB.Invoke(message);
         }
         private void onModulationLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Modulation.SetMsb(message.Data2);
-            OnModulationChange(message);
+            onModulationChange(message);
             
             OnModulationLSB.Invoke(message);
         }
         private void onBreathControllerLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.BreathController.SetMsb(message.Data2);
-            OnBreathControllerChange(message);
+            onBreathControllerChange(message);
             
             OnBreathControllerLSB.Invoke(message);
         }
         private void onUndefined03LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined03.SetMsb(message.Data2);
-            OnUndefined03Change(message);
+            onUndefined03Change(message);
             
             OnUndefined03LSB.Invoke(message);
         }
         private void onFootControllerLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.FootController.SetMsb(message.Data2);
-            OnFootControllerLSB(message);
+            onFootControllerChange(message);
             
             OnFootControllerLSB.Invoke(message);
         }
         private void onPortamentoTimeLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.PortamentoTime.SetMsb(message.Data2);
-            OnPortamentoTimeChange(message);
+            onPortamentoTimeChange(message);
             
             OnPortamentoTimeLSB.Invoke(message);
         }
         private void onChannelVolumeLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.ChannelVolume.SetMsb(message.Data2);
-            OnChannelVolumeChange(message);
+            onChannelVolumeChange(message);
             
             OnChannelVolumeLSB.Invoke(message);
         }
@@ -76,56 +76,56 @@ namespace Dono.Midi
         private void onBalanceLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Balance.SetMsb(message.Data2);
-            OnBalanceChange(message);
+            onBalanceChange(message);
             
             OnBalanceLSB.Invoke(message);
         }
         private void onUndefined09LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined09.SetMsb(message.Data2);
-            OnUndefined09Change(message);
+            onUndefined09Change(message);
             
             OnUndefined09LSB.Invoke(message);
         }
         private void onPanLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Pan.SetMsb(message.Data2);
-            OnPanChange(message);
+            onPanChange(message);
             
             OnPanLSB.Invoke(message);
         }
         private void onExpressionControllerLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.ExpressionController.SetMsb(message.Data2);
-            OnExpressionControllerChange(message);
+            onExpressionControllerChange(message);
             
             OnExpressionControllerLSB.Invoke(message);
         }
         private void onEffectControl1LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.EffectControl1.SetMsb(message.Data2);
-            OnEffectControl1Change(message);
+            onEffectControl1Change(message);
             
             OnEffectControl1LSB.Invoke(message);
         }
         private void onEffectControl2LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.EffectControl2.SetMsb(message.Data2);
-            OnEffectControl2Change(message);
+            onEffectControl2Change(message);
             
             OnEffectControl2LSB.Invoke(message);
         }
         private void onUndefined0ELSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined0E.SetMsb(message.Data2);
-            OnUndefined0EChange(message);
+            onUndefined0EChange(message);
             
             OnUndefined0ELSB.Invoke(message);
         }
         private void onUndefined0FLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined0F.SetMsb(message.Data2);
-            OnUndefined0FChange(message);
+            onUndefined0FChange(message);
             
             OnUndefined0FLSB.Invoke(message);
         }
@@ -141,56 +141,56 @@ namespace Dono.Midi
         private void onGeneralPurposeController1LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.GeneralPurposeController1.SetMsb(message.Data2);
-            OnGeneralPurposeController1Change(message);
+            onGeneralPurposeController1Change(message);
             
             OnGeneralPurposeController1LSB.Invoke(message);
         }
         private void onGeneralPurposeController2LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.GeneralPurposeController2.SetMsb(message.Data2);
-            OnGeneralPurposeController2Change(message);
+            onGeneralPurposeController2Change(message);
             
             OnGeneralPurposeController2LSB.Invoke(message);
         }
         private void onGeneralPurposeController3LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.GeneralPurposeController3.SetMsb(message.Data2);
-            OnGeneralPurposeController3Change(message);
+            onGeneralPurposeController3Change(message);
             
             OnGeneralPurposeController3LSB.Invoke(message);
         }
         private void onGeneralPurposeController4LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.GeneralPurposeController4.SetMsb(message.Data2);
-            OnGeneralPurposeController4Change(message);
+            onGeneralPurposeController4Change(message);
             
             OnGeneralPurposeController4LSB.Invoke(message);
         }
         private void onUndefined14LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined14.SetMsb(message.Data2);
-            OnUndefined14Change(message);
+            onUndefined14Change(message);
             
             OnUndefined14LSB.Invoke(message);
         }
         private void onUndefined15LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined15.SetMsb(message.Data2);
-            OnUndefined15Change(message);
+            onUndefined15Change(message);
             
             OnUndefined15LSB.Invoke(message);
         }
         private void onUndefined16LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined16.SetMsb(message.Data2);
-            OnUndefined16Change(message);
+            onUndefined16Change(message);
             
             OnUndefined16LSB.Invoke(message);
         }
         private void onUndefined17LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined17.SetMsb(message.Data2);
-            OnUndefined17Change(message);
+            onUndefined17Change(message);
             
             OnUndefined17LSB.Invoke(message);
         }
@@ -206,56 +206,56 @@ namespace Dono.Midi
         private void onUndefined18LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined18.SetMsb(message.Data2);
-            OnUndefined18Change(message);
+            onUndefined18Change(message);
             
             OnUndefined18LSB.Invoke(message);
         }
         private void onUndefined19LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined19.SetMsb(message.Data2);
-            OnUndefined19Change(message);
+            onUndefined19Change(message);
             
             OnUndefined19LSB.Invoke(message);
         }
         private void onUndefined1ALSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined1A.SetMsb(message.Data2);
-            OnUndefined1AChange(message);
+            onUndefined1AChange(message);
             
             OnUndefined1ALSB.Invoke(message);
         }
         private void onUndefined1BLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined1B.SetMsb(message.Data2);
-            OnUndefined1BChange(message);
+            onUndefined1BChange(message);
             
             OnUndefined1BLSB.Invoke(message);
         }
         private void onUndefined1CLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined1C.SetMsb(message.Data2);
-            OnUndefined1CChange(message);
+            onUndefined1CChange(message);
             
             OnUndefined1CLSB.Invoke(message);
         }
         private void onUndefined1DLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined1D.SetMsb(message.Data2);
-            OnUndefined1DChange(message);
+            onUndefined1DChange(message);
             
             OnUndefined1DLSB.Invoke(message);
         }
         private void onUndefined1ELSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined1E.SetMsb(message.Data2);
-            OnUndefined1EChange(message);
+            onUndefined1EChange(message);
             
             OnUndefined1ELSB.Invoke(message);
         }
         private void onUndefined1FLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined1F.SetMsb(message.Data2);
-            OnUndefined1FChange(message);
+            onUndefined1FChange(message);
             
             OnUndefined1FLSB.Invoke(message);
         }
