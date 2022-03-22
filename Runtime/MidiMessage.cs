@@ -1,7 +1,4 @@
-﻿using Dono.Midi.Types;
-using System;
-using UnityEngine;
-using UnityEngine.Assertions;
+﻿using System;
 
 namespace Dono.Midi
 {
@@ -72,7 +69,6 @@ namespace Dono.Midi
             }
         }
 
-
         #endregion
         #region MessageTypes
         public MessageType messageType = MessageType.None;
@@ -82,9 +78,14 @@ namespace Dono.Midi
         public SystemCommonType systemCommonType = SystemCommonType.None;
         public SystemRealTimeType systemRealtimeType = SystemRealTimeType.None;
         public MetaEventType metaEventType = MetaEventType.None;
-        public bool IsChannelMessage => messageType == MessageType.ChannelMode || messageType == MessageType.ChannelVoice;
         #endregion
 
+        #region IsXXX
+        public bool IsChannelMessage => messageType == MessageType.ChannelMode || messageType == MessageType.ChannelVoice;
+        public bool IsNote => channelVoiceType == ChannelVoiceType.NoteOn || channelVoiceType == ChannelVoiceType.NoteOff;
+        public bool IsWhiteNote => IsNote && MidiUtilities.IsWhiteNote(Data1); 
+        public bool IsBlackNote => IsNote && MidiUtilities.IsBlackNote(Data1);
+        #endregion
 
         internal MidiMessage(byte status, bool isSMF = false)
         {
@@ -114,36 +115,6 @@ namespace Dono.Midi
             byte[] bytes = message.Bytes;
             Initialize(bytes, isSMF);
         }
-
-        private void Initialize(byte[] bytes, bool isSMF = false)
-        {
-            if (bytes.Length == 0)
-                return;
-
-            // データのコピー
-            int messageLength = 0;
-
-            messageLength = GetMessageLength(bytes, isSMF: isSMF);
-
-            Bytes = new byte[messageLength];
-            for (int i = 0; i < messageLength; i++)
-            {
-                Bytes[i] = bytes[i];
-            }
-
-            // Typesの更新
-            if (isCorrectFormat)
-            {
-                UpdateMessageType();
-                UpdateChannelVoiceType();
-                UpdateControlChangeType();
-                UpdateChannelModeType();
-                UpdateSystemCommonType();
-                UpdateSystemRealTimeType();
-                UpdateMetaEventType();
-            }
-        }
-
 
 
         /// <summary>
@@ -359,6 +330,34 @@ namespace Dono.Midi
             return messageLength;
         }
 
+        private void Initialize(byte[] bytes, bool isSMF = false)
+        {
+            if (bytes.Length == 0)
+                return;
+
+            // データのコピー
+            int messageLength = 0;
+
+            messageLength = GetMessageLength(bytes, isSMF: isSMF);
+
+            Bytes = new byte[messageLength];
+            for (int i = 0; i < messageLength; i++)
+            {
+                Bytes[i] = bytes[i];
+            }
+
+            // Typesの更新
+            if (isCorrectFormat)
+            {
+                UpdateMessageType();
+                UpdateChannelVoiceType();
+                UpdateControlChangeType();
+                UpdateChannelModeType();
+                UpdateSystemCommonType();
+                UpdateSystemRealTimeType();
+                UpdateMetaEventType();
+            }
+        }
         private void UpdateMessageType()
         {
             // ChannelModeMessage

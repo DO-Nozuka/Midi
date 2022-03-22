@@ -23,7 +23,7 @@ namespace Dono.Midi
             // チャンネルの取得
             foreach(var message in messages)
             {
-                if (message.Message.messageType == Types.MessageType.ChannelMode || message.Message.messageType == Types.MessageType.ChannelVoice)
+                if (message.Message.messageType == MessageType.ChannelMode || message.Message.messageType == MessageType.ChannelVoice)
                 {
                     if (Channel == -1)
                     {
@@ -42,7 +42,7 @@ namespace Dono.Midi
             // TrackNameの取得
             foreach(var message in messages)
             {
-                if (message.Message.metaEventType == Types.MetaEventType.SequenceAndTrackName)
+                if (message.Message.metaEventType == MetaEventType.SequenceAndTrackName)
                 {
                     var bytes = message.Message.Bytes;
                     int index = 2;
@@ -58,7 +58,7 @@ namespace Dono.Midi
             // TrackTypeの取得
             if (TrackName == "Score Setup" || TrackName == "Partitura Setup")
                 TrackType = SMFTrackType.ScoreSetup;
-            else if (messages.Find((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo || n.Message.metaEventType == Types.MetaEventType.TimeSignature) != null)
+            else if (messages.Find((n) => n.Message.metaEventType == MetaEventType.SetTempo || n.Message.metaEventType == MetaEventType.TimeSignature) != null)
                 TrackType = SMFTrackType.Conductor;
             else
                 TrackType = SMFTrackType.Part;
@@ -66,7 +66,7 @@ namespace Dono.Midi
             // Portの取得
             foreach (var message in messages)
             {
-                if (message.Message.metaEventType == Types.MetaEventType.PortPrefix)
+                if (message.Message.metaEventType == MetaEventType.PortPrefix)
                 {
                     Port = message.Message.Bytes[3];
                 }

@@ -78,34 +78,6 @@
             // msb/lsbより再計算
             calcAll(HasMinus, Msb, Lsb);
         }
-
-        public void SetMsb(byte msb)
-        {
-            // 範囲外の処理
-            if (msb >= 128)
-            {
-                msb = (byte)(HasMinus ? 64 : 0);
-            }
-
-            // 値のセット
-            this.Msb = msb;
-
-            // msb/lsbより再計算
-            calcAll(HasMinus, Msb, Lsb);
-        }
-        public void SetLsb(byte lsb)
-        {
-            // 範囲外の処理
-            if (lsb >= 128)
-                lsb = 0;
-
-            // 値のセット
-            this.Lsb = lsb;
-
-            // msb/lsbより再計算
-            calcAll(HasMinus, Msb, Lsb);
-
-        }
         public void SetRate(float rate)
         {
             // 範囲外の処理
@@ -136,6 +108,65 @@
 
             // msb/lsbより再計算
             calcAll(HasMinus, Msb, Lsb);
+        }
+
+        public void SetMsb(byte msb)
+        {
+            // 範囲外の処理
+            if (msb >= 128)
+            {
+                msb = (byte)(HasMinus ? 64 : 0);
+            }
+
+            // 値のセット
+            this.Msb = msb;
+
+            // msb/lsbより再計算
+            calcAll(HasMinus, Msb, Lsb);
+        }
+        public void SetLsb(byte lsb)
+        {
+            // 範囲外の処理
+            if (lsb >= 128)
+                lsb = 0;
+
+            // 値のセット
+            this.Lsb = lsb;
+
+            // msb/lsbより再計算
+            calcAll(HasMinus, Msb, Lsb);
+
+        }
+
+        public void IncValue()
+        {
+            if (Msb == 0x7F && Lsb == 0x7F)
+            {
+                // NOP
+            }
+            else if (Lsb == 0x7F)
+            {
+                SetBits((byte)(Msb + 1), 0);
+            }
+            else
+            {
+                SetBits(Msb, (byte)(Lsb + 1));
+            }
+        }
+        public void DecValue()
+        {
+            if (Msb == 0x00 && Lsb == 0x00)
+            {
+                // NOP
+            }
+            else if (Lsb == 0x00)
+            {
+                SetBits((byte)(Msb - 1), 0x7F);
+            }
+            else
+            {
+                SetBits(Msb, (byte)(Lsb - 1));
+            }
         }
 
         // private Methods

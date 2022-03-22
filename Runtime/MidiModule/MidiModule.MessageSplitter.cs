@@ -1,462 +1,109 @@
-using Dono.Midi.Types;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace Dono.Midi
 {
 
     public partial class MidiModule // MessageSplitter
     {
-        public void AnyMessageSplitter(MidiMessage message)
+        public Action<MidiMessage> OnAny { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnChannelVoice { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnChannelMode { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnSystemExclusive { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnSystemCommon { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnSystemRealtime { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnMetaEvent { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnControlChange { get; private set; } = (m) => { };
+
+
+        private void AnyMessageSplitter(MidiMessage message)
         {
             switch (message.messageType)
             {
                 case MessageType.ChannelVoice:
-                    ChannelVoiceSplitter(message);
+                    channelVoiceSplitter(message);
                     break;
                 case MessageType.ChannelMode:
-                    ChannelModeSplitter(message);
+                    channelModeSplitter(message);
                     break;
                 case MessageType.SystemExclusive:
-                    SystemExclusiveSplitter(message);
+                    systemExclusiveSplitter(message);
                     break;
                 case MessageType.SystemCommon:
-                    SystemCommonSplitter(message);
+                    systemCommonSplitter(message);
                     break;
                 case MessageType.SystemRealtime:
-                    SystemRealtimeSplitter(message);
+                    systemRealtimeSplitter(message);
                     break;
                 case MessageType.MetaEvent:
-                    MetaEventSplitter(message);
+                    metaEventSplitter(message);
                     break;
             }
+            OnAny.Invoke(message);
         }
-        public virtual void ChannelModeSplitter(MidiMessage message)
-        {
-            switch (message.channelModeType)
-            {
-                case ChannelModeType.AllSoundOff:
-                    OnAllSoundOff(message);
-                    break;
-                case ChannelModeType.ResetAllControllers:
-                    OnResetAllControllers(message);
-                    break;
-                case ChannelModeType.LocalControl:
-                    OnLocalControl(message);
-                    break;
-                case ChannelModeType.AllNotesOff:
-                    OnAllNotesOff(message);
-                    break;
-                case ChannelModeType.OmniModeOff:
-                    OnOmniModeOff(message);
-                    break;
-                case ChannelModeType.OmniModeOn:
-                    OnOmniModeOn(message);
-                    break;
-                case ChannelModeType.MonoModeOn:
-                    OnMonoModeOn(message);
-                    break;
-                case ChannelModeType.PolyModeOn:
-                    OnPolyModeOn(message);
-                    break;
-            }
-        }
-        public virtual void ChannelVoiceSplitter(MidiMessage message)
+        private void channelVoiceSplitter(MidiMessage message)
         {
             switch (message.channelVoiceType)
             {
                 case ChannelVoiceType.NoteOff:
-                    OnNoteOff(message);
+                    onNoteOff(message);
                     break;
                 case ChannelVoiceType.NoteOn:
-                    OnNoteOn(message);
+                    onNoteOn(message);
                     break;
                 case ChannelVoiceType.PolyphonicKeyPressure:
-                    OnPolyphonicKeyPressure(message);
+                    onPolyphonicKeyPressure(message);
                     break;
                 case ChannelVoiceType.ControlChange:
-                    ControlChangeSplitter(message);
+                    controlChangeSplitter(message);
                     break;
                 case ChannelVoiceType.ProgramChange:
-                    OnProgramChange(message);
+                    onProgramChange(message);
                     break;
                 case ChannelVoiceType.ChannelPressure:
-                    OnChannelPressure(message);
+                    onChannelPressure(message);
                     break;
                 case ChannelVoiceType.PitchBendChange:
-                    OnPitchBendChange(message);
+                    onPitchBendChange(message);
                     break;
             }
+            OnChannelVoice.Invoke(message);
         }
-        public virtual void ControlChangeSplitter(MidiMessage message)
+        private void channelModeSplitter(MidiMessage message)
         {
-            switch (message.controlChangeType)
+            switch (message.channelModeType)
             {
-                case ControlChangeType.BankSelectMSB:
-                    OnBankSelectMSB(message);
+                case ChannelModeType.AllSoundOff:
+                    onAllSoundOff(message);
                     break;
-                case ControlChangeType.ModulationMSB:
-                    OnModulationMSB(message);
+                case ChannelModeType.ResetAllControllers:
+                    onResetAllControllers(message);
                     break;
-                case ControlChangeType.BreathControllerMSB:
-                    OnBreathControllerMSB(message);
+                case ChannelModeType.LocalControl:
+                    onLocalControl(message);
                     break;
-                case ControlChangeType.Undefined03MSB:
-                    OnUndefined03MSB(message);
+                case ChannelModeType.AllNotesOff:
+                    onAllNotesOff(message);
                     break;
-                case ControlChangeType.FootControllerMSB:
-                    OnFootControllerMSB(message);
+                case ChannelModeType.OmniModeOff:
+                    onOmniModeOff(message);
                     break;
-                case ControlChangeType.PortamentoTimeMSB:
-                    OnPortamentoTimeMSB(message);
+                case ChannelModeType.OmniModeOn:
+                    onOmniModeOn(message);
                     break;
-                case ControlChangeType.DataEntryMSB:
-                    OnDataEntryMSB(message);
+                case ChannelModeType.MonoModeOn:
+                    onMonoModeOn(message);
                     break;
-                case ControlChangeType.ChannelVolumeMSB:
-                    OnChannelVolumeMSB(message);
-                    break;
-                case ControlChangeType.BalanceMSB:
-                    OnBalanceMSB(message);
-                    break;
-                case ControlChangeType.Undefined09MSB:
-                    OnUndefined09MSB(message);
-                    break;
-                case ControlChangeType.PanMSB:
-                    OnPanMSB(message);
-                    break;
-                case ControlChangeType.ExpressionControllerMSB:
-                    OnExpressionControllerMSB(message);
-                    break;
-                case ControlChangeType.EffectControl1MSB:
-                    OnEffectControl1MSB(message);
-                    break;
-                case ControlChangeType.EffectControl2MSB:
-                    OnEffectControl2MSB(message);
-                    break;
-                case ControlChangeType.Undefined0EMSB:
-                    OnUndefined0EMSB(message);
-                    break;
-                case ControlChangeType.Undefined0FMSB:
-                    OnUndefined0FMSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController1MSB:
-                    OnGeneralPurposeController1MSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController2MSB:
-                    OnGeneralPurposeController2MSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController3MSB:
-                    OnGeneralPurposeController3MSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController4MSB:
-                    OnGeneralPurposeController4MSB(message);
-                    break;
-                case ControlChangeType.Undefined14MSB:
-                    OnUndefined14MSB(message);
-                    break;
-                case ControlChangeType.Undefined15MSB:
-                    OnUndefined15MSB(message);
-                    break;
-                case ControlChangeType.Undefined16MSB:
-                    OnUndefined16MSB(message);
-                    break;
-                case ControlChangeType.Undefined17MSB:
-                    OnUndefined17MSB(message);
-                    break;
-                case ControlChangeType.Undefined18MSB:
-                    OnUndefined18MSB(message);
-                    break;
-                case ControlChangeType.Undefined19MSB:
-                    OnUndefined19MSB(message);
-                    break;
-                case ControlChangeType.Undefined1AMSB:
-                    OnUndefined1AMSB(message);
-                    break;
-                case ControlChangeType.Undefined1BMSB:
-                    OnUndefined1BMSB(message);
-                    break;
-                case ControlChangeType.Undefined1CMSB:
-                    OnUndefined1CMSB(message);
-                    break;
-                case ControlChangeType.Undefined1DMSB:
-                    OnUndefined1DMSB(message);
-                    break;
-                case ControlChangeType.Undefined1EMSB:
-                    OnUndefined1EMSB(message);
-                    break;
-                case ControlChangeType.Undefined1FMSB:
-                    OnUndefined1FMSB(message);
-                    break;
-                case ControlChangeType.BankSelectLSB:
-                    OnBankSelectLSB(message);
-                    break;
-                case ControlChangeType.ModulationWheelLSB:
-                    OnModulationLSB(message);
-                    break;
-                case ControlChangeType.BreathControllerLSB:
-                    OnBreathControllerLSB(message);
-                    break;
-                case ControlChangeType.Undefined03LSB:
-                    OnUndefined03LSB(message);
-                    break;
-                case ControlChangeType.FootControllerLSB:
-                    OnFootControllerLSB(message);
-                    break;
-                case ControlChangeType.PortamentoTimeLSB:
-                    OnPortamentoTimeLSB(message);
-                    break;
-                case ControlChangeType.DataEntryLSB:
-                    OnDataEntryLSB(message);
-                    break;
-                case ControlChangeType.ChannelVolumeLSB:
-                    OnChannelVolumeLSB(message);
-                    break;
-                case ControlChangeType.BalanceLSB:
-                    OnBalanceLSB(message);
-                    break;
-                case ControlChangeType.Undefined09LSB:
-                    OnUndefined09LSB(message);
-                    break;
-                case ControlChangeType.PanLSB:
-                    OnPanLSB(message);
-                    break;
-                case ControlChangeType.ExpressionControllerLSB:
-                    OnExpressionControllerLSB(message);
-                    break;
-                case ControlChangeType.EffectControl1LSB:
-                    OnEffectControl1LSB(message);
-                    break;
-                case ControlChangeType.EffectControl2LSB:
-                    OnEffectControl2LSB(message);
-                    break;
-                case ControlChangeType.Undefined0ELSB:
-                    OnUndefined0ELSB(message);
-                    break;
-                case ControlChangeType.Undefined0FLSB:
-                    OnUndefined0FLSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController1LSB:
-                    OnGeneralPurposeController1LSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController2LSB:
-                    OnGeneralPurposeController2LSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController3LSB:
-                    OnGeneralPurposeController3LSB(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController4LSB:
-                    OnGeneralPurposeController4LSB(message);
-                    break;
-                case ControlChangeType.Undefined14LSB:
-                    OnUndefined14LSB(message);
-                    break;
-                case ControlChangeType.Undefined15LSB:
-                    OnUndefined15LSB(message);
-                    break;
-                case ControlChangeType.Undefined16LSB:
-                    OnUndefined16LSB(message);
-                    break;
-                case ControlChangeType.Undefined17LSB:
-                    OnUndefined17LSB(message);
-                    break;
-                case ControlChangeType.Undefined18LSB:
-                    OnUndefined18LSB(message);
-                    break;
-                case ControlChangeType.Undefined19LSB:
-                    OnUndefined19LSB(message);
-                    break;
-                case ControlChangeType.Undefined1ALSB:
-                    OnUndefined1ALSB(message);
-                    break;
-                case ControlChangeType.Undefined1BLSB:
-                    OnUndefined1BLSB(message);
-                    break;
-                case ControlChangeType.Undefined1CLSB:
-                    OnUndefined1CLSB(message);
-                    break;
-                case ControlChangeType.Undefined1DLSB:
-                    OnUndefined1DLSB(message);
-                    break;
-                case ControlChangeType.Undefined1ELSB:
-                    OnUndefined1ELSB(message);
-                    break;
-                case ControlChangeType.Undefined1FLSB:
-                    OnUndefined1FLSB(message);
-                    break;
-                case ControlChangeType.Hold:
-                    OnHold(message);
-                    break;
-                case ControlChangeType.Portamento:
-                    OnPortamento(message);
-                    break;
-                case ControlChangeType.Sostenuto:
-                    OnSostenuto(message);
-                    break;
-                case ControlChangeType.SoftPedal:
-                    OnSoftPedal(message);
-                    break;
-                case ControlChangeType.LegatoFootswitch:
-                    OnLegatoFootswitch(message);
-                    break;
-                case ControlChangeType.Hold2:
-                    OnHold2(message);
-                    break;
-                case ControlChangeType.SoundController1:
-                    OnSoundController1(message);
-                    break;
-                case ControlChangeType.SoundController2:
-                    OnSoundController2(message);
-                    break;
-                case ControlChangeType.SoundController3:
-                    OnSoundController3(message);
-                    break;
-                case ControlChangeType.SoundController4:
-                    OnSoundController4(message);
-                    break;
-                case ControlChangeType.SoundController5:
-                    OnSoundController5(message);
-                    break;
-                case ControlChangeType.SoundController6:
-                    OnSoundController6(message);
-                    break;
-                case ControlChangeType.SoundController7:
-                    OnSoundController7(message);
-                    break;
-                case ControlChangeType.SoundController8:
-                    OnSoundController8(message);
-                    break;
-                case ControlChangeType.SoundController9:
-                    OnSoundController9(message);
-                    break;
-                case ControlChangeType.SoundController10:
-                    OnSoundController10(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController5:
-                    OnGeneralPurposeController5(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController6:
-                    OnGeneralPurposeController6(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController7:
-                    OnGeneralPurposeController7(message);
-                    break;
-                case ControlChangeType.GeneralPurposeController8:
-                    OnGeneralPurposeController8(message);
-                    break;
-                case ControlChangeType.PortamentoControl:
-                    OnPortamentoControl(message);
-                    break;
-                case ControlChangeType.Undefined55:
-                    OnUndefined55(message);
-                    break;
-                case ControlChangeType.Undefined56:
-                    OnUndefined56(message);
-                    break;
-                case ControlChangeType.Undefined57:
-                    OnUndefined57(message);
-                    break;
-                case ControlChangeType.Undefined58:
-                    OnUndefined58(message);
-                    break;
-                case ControlChangeType.Undefined59:
-                    OnUndefined59(message);
-                    break;
-                case ControlChangeType.Undefined5A:
-                    OnUndefined5A(message);
-                    break;
-                case ControlChangeType.Effects1Depth:
-                    OnEffects1Depth(message);
-                    break;
-                case ControlChangeType.Effects2Depth:
-                    OnEffects2Depth(message);
-                    break;
-                case ControlChangeType.Effects3Depth:
-                    OnEffects3Depth(message);
-                    break;
-                case ControlChangeType.Effects4Depth:
-                    OnEffects4Depth(message);
-                    break;
-                case ControlChangeType.Effects5Depth:
-                    OnEffects5Depth(message);
-                    break;
-                case ControlChangeType.DataIncrement:
-                    OnDataIncrement(message);
-                    break;
-                case ControlChangeType.DataDecrement:
-                    OnDataDecrement(message);
-                    break;
-                case ControlChangeType.NonRegisteredParameterNumberLSB:
-                    OnNonRegisteredParameterNumberLSB(message);
-                    break;
-                case ControlChangeType.NonRegisteredParameterNumberMSB:
-                    OnNonRegisteredParameterNumberMSB(message);
-                    break;
-                case ControlChangeType.RegisteredParameterNumberLSB:
-                    OnRegisteredParameterNumberLSB(message);
-                    break;
-                case ControlChangeType.RegisteredParameterNumberMSB:
-                    OnRegisteredParameterNumberMSB(message);
-                    break;
-                case ControlChangeType.Undefined66:
-                    OnUndefined66(message);
-                    break;
-                case ControlChangeType.Undefined67:
-                    OnUndefined67(message);
-                    break;
-                case ControlChangeType.Undefined68:
-                    OnUndefined68(message);
-                    break;
-                case ControlChangeType.Undefined69:
-                    OnUndefined69(message);
-                    break;
-                case ControlChangeType.Undefined6A:
-                    OnUndefined6A(message);
-                    break;
-                case ControlChangeType.Undefined6B:
-                    OnUndefined6B(message);
-                    break;
-                case ControlChangeType.Undefined6C:
-                    OnUndefined6C(message);
-                    break;
-                case ControlChangeType.Undefined6D:
-                    OnUndefined6D(message);
-                    break;
-                case ControlChangeType.Undefined6E:
-                    OnUndefined6E(message);
-                    break;
-                case ControlChangeType.Undefined6F:
-                    OnUndefined6F(message);
-                    break;
-                case ControlChangeType.Undefined70:
-                    OnUndefined70(message);
-                    break;
-                case ControlChangeType.Undefined71:
-                    OnUndefined71(message);
-                    break;
-                case ControlChangeType.Undefined72:
-                    OnUndefined72(message);
-                    break;
-                case ControlChangeType.Undefined73:
-                    OnUndefined73(message);
-                    break;
-                case ControlChangeType.Undefined74:
-                    OnUndefined74(message);
-                    break;
-                case ControlChangeType.Undefined75:
-                    OnUndefined75(message);
-                    break;
-                case ControlChangeType.Undefined76:
-                    OnUndefined76(message);
-                    break;
-                case ControlChangeType.Undefined77:
-                    OnUndefined77(message);
+                case ChannelModeType.PolyModeOn:
+                    onPolyModeOn(message);
                     break;
             }
+            OnChannelMode.Invoke(message);
         }
-
-        public virtual void SystemCommonSplitter(MidiMessage message)
+        private void systemExclusiveSplitter(MidiMessage message)
+        {
+            OnSystemExclusive.Invoke(message);
+        }
+        private void systemCommonSplitter(MidiMessage message)
         {
             switch (message.systemCommonType)
             {
@@ -482,8 +129,9 @@ namespace Dono.Midi
                     OnEOX(message);
                     break;
             }
+            OnSystemCommon.Invoke(message);
         }
-        public virtual void SystemRealtimeSplitter(MidiMessage message)
+        private void systemRealtimeSplitter(MidiMessage message)
         {
             switch (message.systemRealtimeType)
             {
@@ -512,12 +160,9 @@ namespace Dono.Midi
                     OnReset(message);
                     break;
             }
+            OnSystemRealtime.Invoke(message);
         }
-        public virtual void SystemExclusiveSplitter(MidiMessage message)
-        {
-
-        }
-        public virtual void MetaEventSplitter(MidiMessage message)
+        private void metaEventSplitter(MidiMessage message)
         {
             switch (message.metaEventType)
             {
@@ -570,6 +215,374 @@ namespace Dono.Midi
                     OnSequencerSpecificMetaEvent(message);
                     break;
             }
+            OnMetaEvent.Invoke(message);
+        }
+        private void controlChangeSplitter(MidiMessage message)
+        {
+            switch (message.controlChangeType)
+            {
+                case ControlChangeType.BankSelectMSB:
+                    onBankSelectMSB(message);
+                    break;
+                case ControlChangeType.ModulationMSB:
+                    onModulationMSB(message);
+                    break;
+                case ControlChangeType.BreathControllerMSB:
+                    onBreathControllerMSB(message);
+                    break;
+                case ControlChangeType.Undefined03MSB:
+                    onUndefined03MSB(message);
+                    break;
+                case ControlChangeType.FootControllerMSB:
+                    onFootControllerMSB(message);
+                    break;
+                case ControlChangeType.PortamentoTimeMSB:
+                    onPortamentoTimeMSB(message);
+                    break;
+                case ControlChangeType.DataEntryMSB:
+                    onDataEntryMSB(message);
+                    break;
+                case ControlChangeType.ChannelVolumeMSB:
+                    onChannelVolumeMSB(message);
+                    break;
+                case ControlChangeType.BalanceMSB:
+                    onBalanceMSB(message);
+                    break;
+                case ControlChangeType.Undefined09MSB:
+                    onUndefined09MSB(message);
+                    break;
+                case ControlChangeType.PanMSB:
+                    onPanMSB(message);
+                    break;
+                case ControlChangeType.ExpressionControllerMSB:
+                    onExpressionControllerMSB(message);
+                    break;
+                case ControlChangeType.EffectControl1MSB:
+                    onEffectControl1MSB(message);
+                    break;
+                case ControlChangeType.EffectControl2MSB:
+                    onEffectControl2MSB(message);
+                    break;
+                case ControlChangeType.Undefined0EMSB:
+                    onUndefined0EMSB(message);
+                    break;
+                case ControlChangeType.Undefined0FMSB:
+                    onUndefined0FMSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController1MSB:
+                    onGeneralPurposeController1MSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController2MSB:
+                    onGeneralPurposeController2MSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController3MSB:
+                    onGeneralPurposeController3MSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController4MSB:
+                    onGeneralPurposeController4MSB(message);
+                    break;
+                case ControlChangeType.Undefined14MSB:
+                    onUndefined14MSB(message);
+                    break;
+                case ControlChangeType.Undefined15MSB:
+                    onUndefined15MSB(message);
+                    break;
+                case ControlChangeType.Undefined16MSB:
+                    onUndefined16MSB(message);
+                    break;
+                case ControlChangeType.Undefined17MSB:
+                    onUndefined17MSB(message);
+                    break;
+                case ControlChangeType.Undefined18MSB:
+                    onUndefined18MSB(message);
+                    break;
+                case ControlChangeType.Undefined19MSB:
+                    onUndefined19MSB(message);
+                    break;
+                case ControlChangeType.Undefined1AMSB:
+                    onUndefined1AMSB(message);
+                    break;
+                case ControlChangeType.Undefined1BMSB:
+                    onUndefined1BMSB(message);
+                    break;
+                case ControlChangeType.Undefined1CMSB:
+                    onUndefined1CMSB(message);
+                    break;
+                case ControlChangeType.Undefined1DMSB:
+                    onUndefined1DMSB(message);
+                    break;
+                case ControlChangeType.Undefined1EMSB:
+                    onUndefined1EMSB(message);
+                    break;
+                case ControlChangeType.Undefined1FMSB:
+                    onUndefined1FMSB(message);
+                    break;
+                case ControlChangeType.BankSelectLSB:
+                    onBankSelectLSB(message);
+                    break;
+                case ControlChangeType.ModulationWheelLSB:
+                    onModulationLSB(message);
+                    break;
+                case ControlChangeType.BreathControllerLSB:
+                    onBreathControllerLSB(message);
+                    break;
+                case ControlChangeType.Undefined03LSB:
+                    onUndefined03LSB(message);
+                    break;
+                case ControlChangeType.FootControllerLSB:
+                    onFootControllerLSB(message);
+                    break;
+                case ControlChangeType.PortamentoTimeLSB:
+                    onPortamentoTimeLSB(message);
+                    break;
+                case ControlChangeType.DataEntryLSB:
+                    onDataEntryLSB(message);
+                    break;
+                case ControlChangeType.ChannelVolumeLSB:
+                    onChannelVolumeLSB(message);
+                    break;
+                case ControlChangeType.BalanceLSB:
+                    onBalanceLSB(message);
+                    break;
+                case ControlChangeType.Undefined09LSB:
+                    onUndefined09LSB(message);
+                    break;
+                case ControlChangeType.PanLSB:
+                    onPanLSB(message);
+                    break;
+                case ControlChangeType.ExpressionControllerLSB:
+                    onExpressionControllerLSB(message);
+                    break;
+                case ControlChangeType.EffectControl1LSB:
+                    onEffectControl1LSB(message);
+                    break;
+                case ControlChangeType.EffectControl2LSB:
+                    onEffectControl2LSB(message);
+                    break;
+                case ControlChangeType.Undefined0ELSB:
+                    onUndefined0ELSB(message);
+                    break;
+                case ControlChangeType.Undefined0FLSB:
+                    onUndefined0FLSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController1LSB:
+                    onGeneralPurposeController1LSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController2LSB:
+                    onGeneralPurposeController2LSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController3LSB:
+                    onGeneralPurposeController3LSB(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController4LSB:
+                    onGeneralPurposeController4LSB(message);
+                    break;
+                case ControlChangeType.Undefined14LSB:
+                    onUndefined14LSB(message);
+                    break;
+                case ControlChangeType.Undefined15LSB:
+                    onUndefined15LSB(message);
+                    break;
+                case ControlChangeType.Undefined16LSB:
+                    onUndefined16LSB(message);
+                    break;
+                case ControlChangeType.Undefined17LSB:
+                    onUndefined17LSB(message);
+                    break;
+                case ControlChangeType.Undefined18LSB:
+                    onUndefined18LSB(message);
+                    break;
+                case ControlChangeType.Undefined19LSB:
+                    onUndefined19LSB(message);
+                    break;
+                case ControlChangeType.Undefined1ALSB:
+                    onUndefined1ALSB(message);
+                    break;
+                case ControlChangeType.Undefined1BLSB:
+                    onUndefined1BLSB(message);
+                    break;
+                case ControlChangeType.Undefined1CLSB:
+                    onUndefined1CLSB(message);
+                    break;
+                case ControlChangeType.Undefined1DLSB:
+                    onUndefined1DLSB(message);
+                    break;
+                case ControlChangeType.Undefined1ELSB:
+                    onUndefined1ELSB(message);
+                    break;
+                case ControlChangeType.Undefined1FLSB:
+                    onUndefined1FLSB(message);
+                    break;
+                case ControlChangeType.Hold:
+                    onHold(message);
+                    break;
+                case ControlChangeType.Portamento:
+                    onPortamento(message);
+                    break;
+                case ControlChangeType.Sostenuto:
+                    onSostenuto(message);
+                    break;
+                case ControlChangeType.SoftPedal:
+                    onSoftPedal(message);
+                    break;
+                case ControlChangeType.LegatoFootswitch:
+                    onLegatoFootswitch(message);
+                    break;
+                case ControlChangeType.Hold2:
+                    onHold2(message);
+                    break;
+                case ControlChangeType.SoundController1:
+                    onSoundController1(message);
+                    break;
+                case ControlChangeType.SoundController2:
+                    onSoundController2(message);
+                    break;
+                case ControlChangeType.SoundController3:
+                    onSoundController3(message);
+                    break;
+                case ControlChangeType.SoundController4:
+                    onSoundController4(message);
+                    break;
+                case ControlChangeType.SoundController5:
+                    onSoundController5(message);
+                    break;
+                case ControlChangeType.SoundController6:
+                    onSoundController6(message);
+                    break;
+                case ControlChangeType.SoundController7:
+                    onSoundController7(message);
+                    break;
+                case ControlChangeType.SoundController8:
+                    onSoundController8(message);
+                    break;
+                case ControlChangeType.SoundController9:
+                    onSoundController9(message);
+                    break;
+                case ControlChangeType.SoundController10:
+                    onSoundController10(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController5:
+                    onGeneralPurposeController5(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController6:
+                    onGeneralPurposeController6(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController7:
+                    onGeneralPurposeController7(message);
+                    break;
+                case ControlChangeType.GeneralPurposeController8:
+                    onGeneralPurposeController8(message);
+                    break;
+                case ControlChangeType.PortamentoControl:
+                    onPortamentoControl(message);
+                    break;
+                case ControlChangeType.Undefined55:
+                    onUndefined55(message);
+                    break;
+                case ControlChangeType.Undefined56:
+                    onUndefined56(message);
+                    break;
+                case ControlChangeType.Undefined57:
+                    onUndefined57(message);
+                    break;
+                case ControlChangeType.Undefined58:
+                    onUndefined58(message);
+                    break;
+                case ControlChangeType.Undefined59:
+                    onUndefined59(message);
+                    break;
+                case ControlChangeType.Undefined5A:
+                    onUndefined5A(message);
+                    break;
+                case ControlChangeType.Effects1Depth:
+                    onEffects1Depth(message);
+                    break;
+                case ControlChangeType.Effects2Depth:
+                    onEffects2Depth(message);
+                    break;
+                case ControlChangeType.Effects3Depth:
+                    onEffects3Depth(message);
+                    break;
+                case ControlChangeType.Effects4Depth:
+                    onEffects4Depth(message);
+                    break;
+                case ControlChangeType.Effects5Depth:
+                    onEffects5Depth(message);
+                    break;
+                case ControlChangeType.DataIncrement:
+                    onDataIncrement(message);
+                    break;
+                case ControlChangeType.DataDecrement:
+                    onDataDecrement(message);
+                    break;
+                case ControlChangeType.NonRegisteredParameterNumberLSB:
+                    onNonRegisteredParameterNumberLSB(message);
+                    break;
+                case ControlChangeType.NonRegisteredParameterNumberMSB:
+                    onNonRegisteredParameterNumberMSB(message);
+                    break;
+                case ControlChangeType.RegisteredParameterNumberLSB:
+                    onRegisteredParameterNumberLSB(message);
+                    break;
+                case ControlChangeType.RegisteredParameterNumberMSB:
+                    onRegisteredParameterNumberMSB(message);
+                    break;
+                case ControlChangeType.Undefined66:
+                    onUndefined66(message);
+                    break;
+                case ControlChangeType.Undefined67:
+                    onUndefined67(message);
+                    break;
+                case ControlChangeType.Undefined68:
+                    onUndefined68(message);
+                    break;
+                case ControlChangeType.Undefined69:
+                    onUndefined69(message);
+                    break;
+                case ControlChangeType.Undefined6A:
+                    onUndefined6A(message);
+                    break;
+                case ControlChangeType.Undefined6B:
+                    onUndefined6B(message);
+                    break;
+                case ControlChangeType.Undefined6C:
+                    onUndefined6C(message);
+                    break;
+                case ControlChangeType.Undefined6D:
+                    onUndefined6D(message);
+                    break;
+                case ControlChangeType.Undefined6E:
+                    onUndefined6E(message);
+                    break;
+                case ControlChangeType.Undefined6F:
+                    onUndefined6F(message);
+                    break;
+                case ControlChangeType.Undefined70:
+                    onUndefined70(message);
+                    break;
+                case ControlChangeType.Undefined71:
+                    onUndefined71(message);
+                    break;
+                case ControlChangeType.Undefined72:
+                    onUndefined72(message);
+                    break;
+                case ControlChangeType.Undefined73:
+                    onUndefined73(message);
+                    break;
+                case ControlChangeType.Undefined74:
+                    onUndefined74(message);
+                    break;
+                case ControlChangeType.Undefined75:
+                    onUndefined75(message);
+                    break;
+                case ControlChangeType.Undefined76:
+                    onUndefined76(message);
+                    break;
+                case ControlChangeType.Undefined77:
+                    onUndefined77(message);
+                    break;
+            }
+            OnControlChange.Invoke(message);
         }
 
     }

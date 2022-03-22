@@ -75,6 +75,28 @@
             calcAll(HasMinus, Bits);
         }
 
+        public void IncValue()
+        {
+            if (Bits == 0x7F)
+            {
+                // NOP
+            }
+            else
+            {
+                SetBits((byte)(Bits + 1));
+            }
+        }
+        public void DecValue()
+        {
+            if (Bits == 0x00)
+            {
+                // NOP
+            }
+            else
+            {
+                SetBits((byte)(Bits - 1));
+            }
+        }
         // private Methods
         private byte calcValue(bool hasMinus, byte bits)
         {

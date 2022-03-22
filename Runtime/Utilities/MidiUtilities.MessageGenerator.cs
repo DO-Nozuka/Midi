@@ -1,5 +1,3 @@
-using Dono.Midi.Types;
-
 namespace Dono.Midi
 {
     public static partial class MidiUtilities

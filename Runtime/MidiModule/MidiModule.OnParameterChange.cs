@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,68 +8,22 @@ namespace Dono.Midi
 
     public partial class MidiModule
     {
-        private void dataInc(Midi1ByteValue value)
-        {
-            var cBits = value.Bits;
-            if (cBits == 0x7F)
-            {
-                // NOP
-            }
-            else
-            {
-                value.SetBits((byte)(cBits + 1));
-            }
-        }
-        private void dataInc(Midi2ByteValue value)
-        {
-            var cMSB = value.Msb;
-            var cLSB = value.Lsb;
+        public Action<MidiMessage> OnDataEntryMSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnDataEntryLSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnDataIncrement { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnDataDecrement { get; private set; } = (m) => { };
 
-            if (cMSB == 0x7F && cLSB == 0x7F)
-            {
-                // NOP
-            }
-            else if (cLSB == 0x7F)
-            {
-                value.SetBits((byte)(cMSB + 1), 0);
-            }
-            else
-            {
-                value.SetBits(cMSB, (byte)(cLSB + 1));
-            }
-        }
-        private void dataDec(Midi1ByteValue value)
-        {
-            var cBits = value.Bits;
-            if (cBits == 0x00)
-            {
-                // NOP
-            }
-            else
-            {
-                value.SetBits((byte)(cBits - 1));
-            }
-        }
-        private void dataDec(Midi2ByteValue value)
-        {
-            var cMSB = value.Msb;
-            var cLSB = value.Lsb;
+        /// <summary>
+        /// OnDataEntryMSB / OnDataEntryLSB / OnDataIncrement / OnDataDecrement
+        /// </summary>
+        public Action<MidiMessage> OnDataEntryChange { get; private set; } = (m) => { };
+        
+        public Action<MidiMessage> OnNonRegisteredParameterNumberLSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnNonRegisteredParameterNumberMSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnRegisteredParameterNumberLSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnRegisteredParameterNumberMSB { get; private set; } = (m) => { };
 
-            if (cMSB == 0x00 && cLSB == 0x00)
-            {
-                // NOP
-            }
-            else if (cLSB == 0x00)
-            {
-                value.SetBits((byte)(cMSB - 1), 0x7F);
-            }
-            else
-            {
-                value.SetBits(cMSB, (byte)(cLSB - 1));
-            }
-        }
-
-        public virtual void OnDataEntryMSB(MidiMessage message)
+        private void onDataEntryMSB(MidiMessage message)
         {
             if (ChannelState[message.Channel].Parameter.IsTargetRegisterdParameter)
             {
@@ -92,7 +47,7 @@ namespace Dono.Midi
             {
                 byte NRPN_MSB = ChannelState[message.Channel].SingleCC.RegisteredParameterNumberMSB.Value;
                 byte NRPN_LSB = ChannelState[message.Channel].SingleCC.RegisteredParameterNumberLSB.Value;
-                
+
                 uint NRPN = ((uint)NRPN_MSB << 7) + NRPN_LSB;
 
                 if (ChannelState[message.Channel].Parameter.NonRegisterdParameter.ContainsKey(NRPN))
@@ -105,9 +60,11 @@ namespace Dono.Midi
                     ChannelState[message.Channel].Parameter.NonRegisterdParameter[NRPN].SetMsb(message.Data2);
                 }
             }
-            OnDataEntryChange(message);
+
+            OnDataEntryMSB.Invoke(message);
+            OnDataEntryChange.Invoke(message);
         }
-        public virtual void OnDataEntryLSB(MidiMessage message)
+        private void onDataEntryLSB(MidiMessage message)
         {
             if (ChannelState[message.Channel].Parameter.IsTargetRegisterdParameter)
             {
@@ -144,10 +101,11 @@ namespace Dono.Midi
                     ChannelState[message.Channel].Parameter.NonRegisterdParameter[NRPN].SetLsb(message.Data2);
                 }
             }
-            OnDataEntryChange(message);
+
+            OnDataEntryLSB.Invoke(message);
+            OnDataEntryChange.Invoke(message);
         }
-        public virtual void OnDataEntryChange(MidiMessage message) { }
-        public virtual void OnDataIncrement(MidiMessage message)
+        private void onDataIncrement(MidiMessage message)
         {
             if (ChannelState[message.Channel].Parameter.IsTargetRegisterdParameter)
             {
@@ -156,15 +114,15 @@ namespace Dono.Midi
 
                 if (RPN_MSB == 0x00 && RPN_LSB == 0x00)
                 {
-                    dataInc(ChannelState[message.Channel].Parameter.PitchBendSensitivity);
+                    ChannelState[message.Channel].Parameter.PitchBendSensitivity.IncValue();
                 }
                 else if (RPN_MSB == 0x00 && RPN_LSB == 0x01)
                 {
-                    dataInc(ChannelState[message.Channel].Parameter.MasterTuning.FineTune);
+                    ChannelState[message.Channel].Parameter.MasterTuning.FineTune.IncValue();
                 }
                 else if (RPN_MSB == 0x00 && RPN_LSB == 0x02)
                 {
-                    dataInc(ChannelState[message.Channel].Parameter.MasterTuning.CoarseTune);
+                    ChannelState[message.Channel].Parameter.MasterTuning.CoarseTune.IncValue();
                 }
             }
             else
@@ -175,15 +133,18 @@ namespace Dono.Midi
 
                 if (ChannelState[message.Channel].Parameter.NonRegisterdParameter.ContainsKey(NRPN))
                 {
-                    dataInc(ChannelState[message.Channel].Parameter.NonRegisterdParameter[NRPN]);
+                    ChannelState[message.Channel].Parameter.NonRegisterdParameter[NRPN].IncValue();
                 }
                 else
                 {
                     // NOP
                 }
             }
+
+            OnDataIncrement.Invoke(message);
+            OnDataEntryChange.Invoke(message);
         }
-        public virtual void OnDataDecrement(MidiMessage message)
+        private void onDataDecrement(MidiMessage message)
         {
             if (ChannelState[message.Channel].Parameter.IsTargetRegisterdParameter)
             {
@@ -192,15 +153,15 @@ namespace Dono.Midi
 
                 if (RPN_MSB == 0x00 && RPN_LSB == 0x00)
                 {
-                    dataDec(ChannelState[message.Channel].Parameter.PitchBendSensitivity);
+                    ChannelState[message.Channel].Parameter.PitchBendSensitivity.DecValue();
                 }
                 else if (RPN_MSB == 0x00 && RPN_LSB == 0x01)
                 {
-                    dataDec(ChannelState[message.Channel].Parameter.MasterTuning.FineTune);
+                    ChannelState[message.Channel].Parameter.MasterTuning.FineTune.DecValue();
                 }
                 else if (RPN_MSB == 0x00 && RPN_LSB == 0x02)
                 {
-                    dataDec(ChannelState[message.Channel].Parameter.MasterTuning.CoarseTune);
+                    ChannelState[message.Channel].Parameter.MasterTuning.CoarseTune.DecValue();
                 }
             }
             else
@@ -211,29 +172,36 @@ namespace Dono.Midi
 
                 if (ChannelState[message.Channel].Parameter.NonRegisterdParameter.ContainsKey(NRPN))
                 {
-                    dataDec(ChannelState[message.Channel].Parameter.NonRegisterdParameter[NRPN]);
+                    ChannelState[message.Channel].Parameter.NonRegisterdParameter[NRPN].DecValue();
                 }
                 else
                 {
                     // NOP
                 }
             }
+
+            OnDataDecrement.Invoke(message);
+            OnDataEntryChange.Invoke(message);
         }
-        public virtual void OnNonRegisteredParameterNumberLSB(MidiMessage message)
+        private void onNonRegisteredParameterNumberLSB(MidiMessage message)
         {
             ChannelState[message.Channel].SingleCC.NonRegisteredParameterNumberLSB.SetBits(message.Data2);
+            OnNonRegisteredParameterNumberLSB.Invoke(message);
         }
-        public virtual void OnNonRegisteredParameterNumberMSB(MidiMessage message)
+        private void onNonRegisteredParameterNumberMSB(MidiMessage message)
         {
             ChannelState[message.Channel].SingleCC.NonRegisteredParameterNumberMSB.SetBits(message.Data2);
+            OnNonRegisteredParameterNumberMSB.Invoke(message);
         }
-        public virtual void OnRegisteredParameterNumberLSB(MidiMessage message)
+        private void onRegisteredParameterNumberLSB(MidiMessage message)
         {
             ChannelState[message.Channel].SingleCC.RegisteredParameterNumberLSB.SetBits(message.Data2);
+            OnRegisteredParameterNumberLSB.Invoke(message);
         }
-        public virtual void OnRegisteredParameterNumberMSB(MidiMessage message)
+        private void onRegisteredParameterNumberMSB(MidiMessage message)
         {
             ChannelState[message.Channel].SingleCC.RegisteredParameterNumberMSB.SetBits(message.Data2);
+            OnRegisteredParameterNumberMSB.Invoke(message);
         }
     }
 }

@@ -43,8 +43,8 @@ namespace Dono.Midi
 
             // TimingEventを初期化する
             if (IsDebugMode) Debug.Log($"[SMF]Start to Get TimingEvent.");
-            List<SMFEvent> tempoEvents = ConductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
-            List<SMFEvent> changeBeatEvents = ConductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.TimeSignature);
+            List<SMFEvent> tempoEvents = ConductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.SetTempo);
+            List<SMFEvent> changeBeatEvents = ConductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.TimeSignature);
 
             if (IsDebugMode) Debug.Log($"[SMF]Start to InitializeTimingEvents.");
             SMFTiming.InitializeTimingEvents(tempoEvents, changeBeatEvents, division);
@@ -56,7 +56,7 @@ namespace Dono.Midi
             {
                 notTimingEvents.AddRange(track.Messages);
             }
-            notTimingEvents.RemoveAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo || n.Message.metaEventType == Types.MetaEventType.TimeSignature);
+            notTimingEvents.RemoveAll((n) => n.Message.metaEventType == MetaEventType.SetTempo || n.Message.metaEventType == MetaEventType.TimeSignature);
             SMFTiming.InitializeTimes(notTimingEvents, tempoEvents, changeBeatEvents, division);
 
             // Scoreに分ける
@@ -267,7 +267,7 @@ namespace Dono.Midi
         /// <returns>First found value</returns>
         public static float GetMarkTiming(SMFTrack conductorTrack, string name)
         {
-            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.Marker);
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.Marker);
 
             foreach (var message in messages)
             {
@@ -286,7 +286,7 @@ namespace Dono.Midi
         /// <returns>variable name(when not found, return "")</returns>
         public static string GetTextEventVariable(SMFTrack conductorTrack, string name)
         {
-            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.TextEvent);
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.TextEvent);
 
             foreach (var message in messages)
             {
@@ -323,7 +323,7 @@ namespace Dono.Midi
 
         public static float GetMaxBPM(SMFTrack conductorTrack)
         {
-            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.SetTempo);
 
             int minUSPB = 0b11111111_11111111_11111111;
             foreach(var message in messages)
@@ -339,7 +339,7 @@ namespace Dono.Midi
 
         public static float GetMinBPM(SMFTrack conductorTrack)
         {
-            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+            var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.SetTempo);
             int maxUSPB = 0b00000000_00000000_00000000;
             foreach(var message in messages)
             {
@@ -360,7 +360,7 @@ namespace Dono.Midi
         /// <returns></returns>
         public static float GetBPM(SMFTrack conductorTrack, int totalDeltaTime)
         {
-            var tempoChages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+            var tempoChages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.SetTempo);
 
             SMFEvent tempoChange = tempoChages[0];
 
@@ -386,7 +386,7 @@ namespace Dono.Midi
         {
             var result = new List<SMFEvent>();
 
-            var tempoChages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == Types.MetaEventType.SetTempo);
+            var tempoChages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.SetTempo);
 
             SMFEvent tempoChange = tempoChages[0];
             for (int i = 1; i < tempoChages.Count; i++)
@@ -397,7 +397,7 @@ namespace Dono.Midi
 
             result.Add(tempoChange);
             result.AddRange(conductorTrack.Messages.FindAll((n) =>
-            n.Message.metaEventType == Types.MetaEventType.SetTempo
+            n.Message.metaEventType == MetaEventType.SetTempo
             && frontTotalDeltaTime < n.Timing.TotalDeltaTime && n.Timing.TotalDeltaTime < rearTotalDeltaTime));
 
             return result;

@@ -1,4 +1,4 @@
-﻿namespace Dono.Midi.Types
+﻿namespace Dono.Midi
 {
     // 0xFs s=1-7
     public enum SystemCommonType

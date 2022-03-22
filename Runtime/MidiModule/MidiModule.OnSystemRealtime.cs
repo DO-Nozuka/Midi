@@ -1,19 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace Dono.Midi
 {
 
     public partial class MidiModule // OnSystemRealTime
-    {    
-        public virtual void OnTimingClock(MidiMessage message) { }
-        public virtual void OnUndefinedF9(MidiMessage message) { }
-        public virtual void OnStart(MidiMessage message) { }
-        public virtual void OnContinue(MidiMessage message) { }
-        public virtual void OnStop(MidiMessage message) { }
-        public virtual void OnUndefinedFD(MidiMessage message) { }
-        public virtual void OnActiveSensing(MidiMessage message) { }
-        public virtual void OnReset(MidiMessage message) { }
+    {
+        public Action<MidiMessage> OnTimingClock { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnUndefinedF9 { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnStart { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnContinue { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnStop { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnUndefinedFD { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnActiveSensing { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnReset { get; private set; } = (m) => { };
     }
 }

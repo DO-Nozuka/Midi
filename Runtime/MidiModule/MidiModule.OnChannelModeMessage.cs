@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,48 +8,58 @@ namespace Dono.Midi
 
     public partial class MidiModule // OnChannelModeMessage
     {
-        public virtual void OnAllSoundOff(MidiMessage message)
+        public Action<MidiMessage> OnAllSoundOff { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnResetAllControllers { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnLocalControl { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnAllNotesOff { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnOmniModeOff { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnOmniModeOn { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnMonoModeOn { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnPolyModeOn { get; private set; } = (m) => { };
+        
+
+        private void onAllSoundOff(MidiMessage message)
         {
-            OnAllNotesOff(message);
+            allNotesOff();
+            OnAllSoundOff.Invoke(message);
         }
-        public virtual void OnResetAllControllers(MidiMessage message)
+        private void onResetAllControllers(MidiMessage message)
         {
-            OnAllNotesOff(message);
+            allNotesOff();
+
             // ChannelState
             for(int i = 0; i < ChannelState.Length; i++)
             {
                 ChannelState[i].ResetAll();
             }
+
+            OnResetAllControllers.Invoke(message);
         }
-        public virtual void OnLocalControl(MidiMessage message)
+        private void onLocalControl(MidiMessage message)
         {
             if (message.Data2 == 0x00)
-            ChannelMode.LocalControl = false;
+                ChannelMode.LocalControl = false;
             else if (message.Data2 == 0x7F)
-            ChannelMode.LocalControl = true;
+                ChannelMode.LocalControl = true;
+
+            OnLocalControl.Invoke(message);
         }
-        public virtual void OnAllNotesOff(MidiMessage message)
+        private void onAllNotesOff(MidiMessage message)
         {
-            for (int channel = 0; channel < 16; channel++)
-            {
-                for (int note = 0; note < 128; note++)
-                {
-                    ChannelState[channel].Note.IsOn[note] = false;
-                    ChannelState[channel].Note.OnVelocity[note].SetValue(0);
-                    ChannelState[channel].Note.OffVelocity[note].SetValue(100);
-                    ChannelState[channel].Note.Pressure[note].SetValue(0);
-                }
-            }
+            allNotesOff();
+            OnAllNotesOff.Invoke(message);
         }
-        public virtual void OnOmniModeOff(MidiMessage message)
+        private void onOmniModeOff(MidiMessage message)
         {
             ChannelMode.OmniOn = false;
+            OnOmniModeOff.Invoke(message);
         }
-        public virtual void OnOmniModeOn(MidiMessage message)
+        private void onOmniModeOn(MidiMessage message)
         {
             ChannelMode.OmniOn = true;
+            OnOmniModeOn.Invoke(message);
         }
-        public virtual void OnMonoModeOn(MidiMessage message)
+        private void onMonoModeOn(MidiMessage message)
         {
             ChannelMode.MonoModeOn = true;
             ChannelMode.MonoChMin = message.Channel;
@@ -60,10 +71,27 @@ namespace Dono.Midi
                 if (ChannelMode.MonoChMax > 15)
                     ChannelMode.MonoChMax = 15;
             }
+
+            OnMonoModeOn.Invoke(message);
         }
-        public virtual void OnPolyModeOn(MidiMessage message)
+        private void onPolyModeOn(MidiMessage message)
         {
             ChannelMode.MonoModeOn = false;
+            OnPolyModeOn.Invoke(message);
+        }
+        
+        private void allNotesOff()
+        {
+            for (int channel = 0; channel < 16; channel++)
+            {
+                for (int note = 0; note < 128; note++)
+                {
+                    ChannelState[channel].Note.IsOn[note] = false;
+                    ChannelState[channel].Note.OnVelocity[note].SetValue(0);
+                    ChannelState[channel].Note.OffVelocity[note].SetValue(100);
+                    ChannelState[channel].Note.Pressure[note].SetValue(0);
+                }
+            }
         }
     }
 }

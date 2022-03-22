@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,21 +7,47 @@ namespace Dono.Midi
 {
     public partial class MidiModule // OnNoteChange
     {
-        public virtual void OnNoteOff(MidiMessage message)
+        public Action<MidiMessage> OnNoteOff { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnNoteOn { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnPolyphonicKeyPressure { get; private set; } = (m) => { };
+        
+        /// <summary>
+        /// NoteOn / NoteOff
+        /// </summary>
+        public Action<MidiMessage> OnNoteOnOff { get; private set; } = (m) => { };
+        /// <summary>
+        /// NoteOn / NoteOff / PolyphonicKeyPressure
+        /// </summary>
+        public Action<MidiMessage> OnAnyNote { get; private set; } = (m) => { };
+
+
+        private void onNoteOff(MidiMessage message)
         {
             ChannelState[message.Channel].Note.IsOn[message.Data1] = true;
             ChannelState[message.Channel].Note.OnVelocity[message.Data1].SetBits(0);
             ChannelState[message.Channel].Note.OffVelocity[message.Data1].SetBits(message.Data2);
+
+            OnNoteOff.Invoke(message);
+            OnNoteOnOff.Invoke(message);
+            OnAnyNote.Invoke(message);
         }
-        public virtual void OnNoteOn(MidiMessage message)
+        private void onNoteOn(MidiMessage message)
         {
             ChannelState[message.Channel].Note.IsOn[message.Data1] = false;
             ChannelState[message.Channel].Note.OnVelocity[message.Data1].SetBits(message.Data2);
             ChannelState[message.Channel].Note.OffVelocity[message.Data1].SetBits(0);
+
+            OnNoteOn.Invoke(message);
+            OnNoteOnOff.Invoke(message);
+            OnAnyNote.Invoke(message);
         }
-        public virtual void OnPolyphonicKeyPressure(MidiMessage message)
+        private void onPolyphonicKeyPressure(MidiMessage message)
         {
             ChannelState[message.Channel].Note.Pressure[message.Data1].SetBits(message.Data2);
+            
+            OnPolyphonicKeyPressure.Invoke(message);
+            OnNoteOnOff.Invoke(message);
+            OnAnyNote.Invoke(message);
         }
 
     }

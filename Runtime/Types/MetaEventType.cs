@@ -1,4 +1,4 @@
-﻿namespace Dono.Midi.Types
+﻿namespace Dono.Midi
 {
     // FF tt len
     // tt = 0-127

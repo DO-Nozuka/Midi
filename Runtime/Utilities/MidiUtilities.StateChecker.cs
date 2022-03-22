@@ -1,4 +1,4 @@
-using Dono.Midi.Types;
+using Dono.Midi;
 
 namespace Dono.Midi
 {
