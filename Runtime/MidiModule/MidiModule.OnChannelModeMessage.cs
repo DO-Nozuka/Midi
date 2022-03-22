@@ -8,14 +8,14 @@ namespace Dono.Midi
 
     public partial class MidiModule // OnChannelModeMessage
     {
-        public Action<MidiMessage> OnAllSoundOff { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnResetAllControllers { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnLocalControl { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnAllNotesOff { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnOmniModeOff { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnOmniModeOn { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnMonoModeOn { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnPolyModeOn { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnAllSoundOff = (m) => { };
+        public Action<MidiMessage> OnResetAllControllers = (m) => { };
+        public Action<MidiMessage> OnLocalControl = (m) => { };
+        public Action<MidiMessage> OnAllNotesOff = (m) => { };
+        public Action<MidiMessage> OnOmniModeOff = (m) => { };
+        public Action<MidiMessage> OnOmniModeOn = (m) => { };
+        public Action<MidiMessage> OnMonoModeOn = (m) => { };
+        public Action<MidiMessage> OnPolyModeOn = (m) => { };
         
 
         private void onAllSoundOff(MidiMessage message)

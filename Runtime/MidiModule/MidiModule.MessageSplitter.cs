@@ -5,14 +5,14 @@ namespace Dono.Midi
 
     public partial class MidiModule // MessageSplitter
     {
-        public Action<MidiMessage> OnAny { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnChannelVoice { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnChannelMode { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnSystemExclusive { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnSystemCommon { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnSystemRealtime { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnMetaEvent { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnControlChange { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnAny = (m) => { };
+        public Action<MidiMessage> OnChannelVoice = (m) => { };
+        public Action<MidiMessage> OnChannelMode = (m) => { };
+        public Action<MidiMessage> OnSystemExclusive = (m) => { };
+        public Action<MidiMessage> OnSystemCommon = (m) => { };
+        public Action<MidiMessage> OnSystemRealtime = (m) => { };
+        public Action<MidiMessage> OnMetaEvent = (m) => { };
+        public Action<MidiMessage> OnControlChange = (m) => { };
 
 
         private void AnyMessageSplitter(MidiMessage message)

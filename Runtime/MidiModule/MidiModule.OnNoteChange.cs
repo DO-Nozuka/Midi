@@ -7,18 +7,18 @@ namespace Dono.Midi
 {
     public partial class MidiModule // OnNoteChange
     {
-        public Action<MidiMessage> OnNoteOff { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnNoteOn { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnPolyphonicKeyPressure { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnNoteOff = (m) => { };
+        public Action<MidiMessage> OnNoteOn = (m) => { };
+        public Action<MidiMessage> OnPolyphonicKeyPressure = (m) => { };
         
         /// <summary>
         /// NoteOn / NoteOff
         /// </summary>
-        public Action<MidiMessage> OnNoteOnOff { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnNoteOnOff = (m) => { };
         /// <summary>
         /// NoteOn / NoteOff / PolyphonicKeyPressure
         /// </summary>
-        public Action<MidiMessage> OnAnyNote { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnAnyNote = (m) => { };
 
 
         private void onNoteOff(MidiMessage message)

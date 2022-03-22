@@ -8,13 +8,13 @@ namespace Dono.Midi
 
     public partial class MidiModule // ControlChange Lsb
     {
-        public Action<MidiMessage> OnBankSelectLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnModulationLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnBreathControllerLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined03LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnFootControllerLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnPortamentoTimeLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnChannelVolumeLSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnBankSelectLSB = (m) => { };
+        public Action<MidiMessage> OnModulationLSB = (m) => { };
+        public Action<MidiMessage> OnBreathControllerLSB = (m) => { };
+        public Action<MidiMessage> OnUndefined03LSB = (m) => { };
+        public Action<MidiMessage> OnFootControllerLSB = (m) => { };
+        public Action<MidiMessage> OnPortamentoTimeLSB = (m) => { };
+        public Action<MidiMessage> OnChannelVolumeLSB = (m) => { };
 
         private void onBankSelectLSB(MidiMessage message)
         {
@@ -65,14 +65,14 @@ namespace Dono.Midi
             
             OnChannelVolumeLSB.Invoke(message);
         }
-        public Action<MidiMessage> OnBalanceLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined09LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnPanLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnExpressionControllerLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnEffectControl1LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnEffectControl2LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined0ELSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined0FLSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnBalanceLSB = (m) => { };
+        public Action<MidiMessage> OnUndefined09LSB = (m) => { };
+        public Action<MidiMessage> OnPanLSB = (m) => { };
+        public Action<MidiMessage> OnExpressionControllerLSB = (m) => { };
+        public Action<MidiMessage> OnEffectControl1LSB = (m) => { };
+        public Action<MidiMessage> OnEffectControl2LSB = (m) => { };
+        public Action<MidiMessage> OnUndefined0ELSB = (m) => { };
+        public Action<MidiMessage> OnUndefined0FLSB = (m) => { };
         private void onBalanceLSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Balance.SetMsb(message.Data2);
@@ -130,14 +130,14 @@ namespace Dono.Midi
             OnUndefined0FLSB.Invoke(message);
         }
 
-        public Action<MidiMessage> OnGeneralPurposeController1LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnGeneralPurposeController2LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnGeneralPurposeController3LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnGeneralPurposeController4LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined14LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined15LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined16LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined17LSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController1LSB = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController2LSB = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController3LSB = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController4LSB = (m) => { };
+        public Action<MidiMessage> OnUndefined14LSB = (m) => { };
+        public Action<MidiMessage> OnUndefined15LSB = (m) => { };
+        public Action<MidiMessage> OnUndefined16LSB = (m) => { };
+        public Action<MidiMessage> OnUndefined17LSB = (m) => { };
         private void onGeneralPurposeController1LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.GeneralPurposeController1.SetMsb(message.Data2);
@@ -195,14 +195,14 @@ namespace Dono.Midi
             OnUndefined17LSB.Invoke(message);
         }
 
-        public Action<MidiMessage> OnUndefined18LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined19LSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1ALSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1BLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1CLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1DLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1ELSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1FLSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnUndefined18LSB = (m) => { };
+        public Action<MidiMessage> OnUndefined19LSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1ALSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1BLSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1CLSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1DLSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1ELSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1FLSB = (m) => { };
         private void onUndefined18LSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined18.SetMsb(message.Data2);

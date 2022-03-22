@@ -8,9 +8,9 @@ namespace Dono.Midi
 
     public partial class MidiModule // OnOtherChannelVoiceChange
     {
-        public Action<MidiMessage> OnProgramChange { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnChannelPressure { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnPitchBendChange { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnProgramChange = (m) => { };
+        public Action<MidiMessage> OnChannelPressure = (m) => { };
+        public Action<MidiMessage> OnPitchBendChange = (m) => { };
 
         private void onProgramChange(MidiMessage message)
         {

@@ -8,20 +8,20 @@ namespace Dono.Midi
 
     public partial class MidiModule
     {
-        public Action<MidiMessage> OnDataEntryMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnDataEntryLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnDataIncrement { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnDataDecrement { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnDataEntryMSB = (m) => { };
+        public Action<MidiMessage> OnDataEntryLSB = (m) => { };
+        public Action<MidiMessage> OnDataIncrement = (m) => { };
+        public Action<MidiMessage> OnDataDecrement = (m) => { };
 
         /// <summary>
         /// OnDataEntryMSB / OnDataEntryLSB / OnDataIncrement / OnDataDecrement
         /// </summary>
-        public Action<MidiMessage> OnDataEntryChange { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnDataEntryChange = (m) => { };
         
-        public Action<MidiMessage> OnNonRegisteredParameterNumberLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnNonRegisteredParameterNumberMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnRegisteredParameterNumberLSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnRegisteredParameterNumberMSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnNonRegisteredParameterNumberLSB = (m) => { };
+        public Action<MidiMessage> OnNonRegisteredParameterNumberMSB = (m) => { };
+        public Action<MidiMessage> OnRegisteredParameterNumberLSB = (m) => { };
+        public Action<MidiMessage> OnRegisteredParameterNumberMSB = (m) => { };
 
         private void onDataEntryMSB(MidiMessage message)
         {

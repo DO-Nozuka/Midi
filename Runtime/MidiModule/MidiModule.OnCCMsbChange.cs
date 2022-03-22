@@ -4,13 +4,13 @@ namespace Dono.Midi
 {
     public partial class MidiModule // ControlChange Msb
     {
-        public Action<MidiMessage> OnBankSelectMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnModulationMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnBreathControllerMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined03MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnFootControllerMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnPortamentoTimeMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnChannelVolumeMSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnBankSelectMSB = (m) => { };
+        public Action<MidiMessage> OnModulationMSB = (m) => { };
+        public Action<MidiMessage> OnBreathControllerMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined03MSB = (m) => { };
+        public Action<MidiMessage> OnFootControllerMSB = (m) => { };
+        public Action<MidiMessage> OnPortamentoTimeMSB = (m) => { };
+        public Action<MidiMessage> OnChannelVolumeMSB = (m) => { };
 
         private void onBankSelectMSB(MidiMessage message)
         {
@@ -68,14 +68,14 @@ namespace Dono.Midi
             OnBalanceMSB.Invoke(message);
         }
 
-        public Action<MidiMessage> OnBalanceMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined09MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnPanMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnExpressionControllerMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnEffectControl1MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnEffectControl2MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined0EMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined0FMSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnBalanceMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined09MSB = (m) => { };
+        public Action<MidiMessage> OnPanMSB = (m) => { };
+        public Action<MidiMessage> OnExpressionControllerMSB = (m) => { };
+        public Action<MidiMessage> OnEffectControl1MSB = (m) => { };
+        public Action<MidiMessage> OnEffectControl2MSB = (m) => { };
+        public Action<MidiMessage> OnUndefined0EMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined0FMSB = (m) => { };
 
         private void onUndefined09MSB(MidiMessage message)
         {
@@ -126,14 +126,14 @@ namespace Dono.Midi
 
             OnUndefined0FMSB.Invoke(message);
         }
-        public Action<MidiMessage> OnGeneralPurposeController1MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnGeneralPurposeController2MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnGeneralPurposeController3MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnGeneralPurposeController4MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined14MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined15MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined16MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined17MSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController1MSB = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController2MSB = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController3MSB = (m) => { };
+        public Action<MidiMessage> OnGeneralPurposeController4MSB = (m) => { };
+        public Action<MidiMessage> OnUndefined14MSB = (m) => { };
+        public Action<MidiMessage> OnUndefined15MSB = (m) => { };
+        public Action<MidiMessage> OnUndefined16MSB = (m) => { };
+        public Action<MidiMessage> OnUndefined17MSB = (m) => { };
         private void onGeneralPurposeController1MSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.GeneralPurposeController1.SetMsb(message.Data2);
@@ -191,14 +191,14 @@ namespace Dono.Midi
             OnUndefined17MSB.Invoke(message);
         }
 
-        public Action<MidiMessage> OnUndefined18MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined19MSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1AMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1BMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1CMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1DMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1EMSB { get; private set; } = (m) => { };
-        public Action<MidiMessage> OnUndefined1FMSB { get; private set; } = (m) => { };
+        public Action<MidiMessage> OnUndefined18MSB = (m) => { };
+        public Action<MidiMessage> OnUndefined19MSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1AMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1BMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1CMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1DMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1EMSB = (m) => { };
+        public Action<MidiMessage> OnUndefined1FMSB = (m) => { };
         private void onUndefined18MSB(MidiMessage message)
         {
             ChannelState[message.Channel].DoubleCC.Undefined18.SetMsb(message.Data2);
