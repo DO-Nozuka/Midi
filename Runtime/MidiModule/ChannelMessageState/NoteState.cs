@@ -33,7 +33,7 @@
             {
                 IsOn[i] = false;
                 OnVelocity[i] = new Midi1ByteValue(false, (int)0);
-                OnVelocity[i] = new Midi1ByteValue(false, (int)100);
+                OffVelocity[i] = new Midi1ByteValue(false, (int)100);
                 Pressure[i] = new Midi1ByteValue(false, (int)0);
             }
         }
