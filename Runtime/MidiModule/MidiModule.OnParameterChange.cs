@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Dono.Midi
 {
@@ -17,7 +14,7 @@ namespace Dono.Midi
         /// OnDataEntryMSB / OnDataEntryLSB / OnDataIncrement / OnDataDecrement
         /// </summary>
         public Action<MidiMessage> OnDataEntryChange = (m) => { };
-        
+
         public Action<MidiMessage> OnNonRegisteredParameterNumberLSB = (m) => { };
         public Action<MidiMessage> OnNonRegisteredParameterNumberMSB = (m) => { };
         public Action<MidiMessage> OnRegisteredParameterNumberLSB = (m) => { };
@@ -81,7 +78,7 @@ namespace Dono.Midi
                 }
                 else if (RPN_MSB == 0x00 && RPN_LSB == 0x02)
                 {
-                    // NOP: CoarseTuneÇ≈ÇÕLSBÇ™ñ≥éãÇ≥ÇÍÇÈ
+                    // NOP: CoarseTune„Åß„ÅØLSB„ÅåÁÑ°Ë¶ñ„Åï„Çå„Çã
                 }
             }
             else

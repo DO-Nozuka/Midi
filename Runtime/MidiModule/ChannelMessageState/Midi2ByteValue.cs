@@ -20,7 +20,7 @@
         /// </summary>
         public float Rate { get; private set; }
         public float RateMSB { get; private set; }
-        
+
         public byte Msb { get; private set; }
         public byte Lsb { get; private set; }
         public uint Bits => (uint)Msb << 7 + Lsb;
@@ -37,16 +37,16 @@
         public void SetValue(int value)
         {
             // 範囲外の処理
-            if(HasMinus)
+            if (HasMinus)
             {
-                if(!(-8192 <= value) && (value <= 8191))
+                if (!(-8192 <= value) && (value <= 8191))
                 {
                     value = 0;
                 }
             }
             else
             {
-                if(!(0 <= value) && (value <= 16383))
+                if (!(0 <= value) && (value <= 16383))
                 {
                     value = 8192;
                 }
@@ -174,7 +174,7 @@
         {
             return ((msb << 7) + lsb) - (hasMinus ? 8192 : 0);
         }
-        private float calcRate(bool hasMinus, byte msb, byte lsb) 
+        private float calcRate(bool hasMinus, byte msb, byte lsb)
         {
             var val = calcValue(false, msb, lsb) / 16383f;   // 0-1.0f
             return hasMinus ? (val - 0.5f) * 2 : val;

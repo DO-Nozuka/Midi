@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Dono.Midi
 {
@@ -16,7 +13,7 @@ namespace Dono.Midi
         public Action<MidiMessage> OnOmniModeOn = (m) => { };
         public Action<MidiMessage> OnMonoModeOn = (m) => { };
         public Action<MidiMessage> OnPolyModeOn = (m) => { };
-        
+
 
         private void onAllSoundOff(MidiMessage message)
         {
@@ -28,7 +25,7 @@ namespace Dono.Midi
             allNotesOff();
 
             // ChannelState
-            for(int i = 0; i < ChannelState.Length; i++)
+            for (int i = 0; i < ChannelState.Length; i++)
             {
                 ChannelState[i].ResetAll();
             }
@@ -79,7 +76,7 @@ namespace Dono.Midi
             ChannelMode.MonoModeOn = false;
             OnPolyModeOn.Invoke(message);
         }
-        
+
         private void allNotesOff()
         {
             for (int channel = 0; channel < 16; channel++)

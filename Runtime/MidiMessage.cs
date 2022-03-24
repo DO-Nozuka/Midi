@@ -83,7 +83,7 @@ namespace Dono.Midi
         #region IsXXX
         public bool IsChannelMessage => messageType == MessageType.ChannelMode || messageType == MessageType.ChannelVoice;
         public bool IsNote => channelVoiceType == ChannelVoiceType.NoteOn || channelVoiceType == ChannelVoiceType.NoteOff;
-        public bool IsWhiteNote => IsNote && MidiUtilities.IsWhiteNote(Data1); 
+        public bool IsWhiteNote => IsNote && MidiUtilities.IsWhiteNote(Data1);
         public bool IsBlackNote => IsNote && MidiUtilities.IsBlackNote(Data1);
         #endregion
 
@@ -496,7 +496,7 @@ namespace Dono.Midi
                         metaEventType = MetaEventType.None;
                         break;
                 }
-            }   
+            }
             else
             {
                 metaEventType = MetaEventType.None;

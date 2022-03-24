@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Dono.Midi
 {
@@ -10,7 +7,7 @@ namespace Dono.Midi
         public Action<MidiMessage> OnNoteOff = (m) => { };
         public Action<MidiMessage> OnNoteOn = (m) => { };
         public Action<MidiMessage> OnPolyphonicKeyPressure = (m) => { };
-        
+
         /// <summary>
         /// NoteOn / NoteOff
         /// </summary>
@@ -44,7 +41,7 @@ namespace Dono.Midi
         private void onPolyphonicKeyPressure(MidiMessage message)
         {
             ChannelState[message.Channel].Note.Pressure[message.Data1].SetBits(message.Data2);
-            
+
             OnPolyphonicKeyPressure.Invoke(message);
             OnNoteOnOff.Invoke(message);
             OnAnyNote.Invoke(message);

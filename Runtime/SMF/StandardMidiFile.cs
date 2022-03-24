@@ -52,7 +52,7 @@ namespace Dono.Midi
             // TrackのTimingを全て更新する
             if (IsDebugMode) Debug.Log($"[SMF]Start to Reset AllEvents.");
             List<SMFEvent> notTimingEvents = new List<SMFEvent>();
-            foreach(var track in tracks)
+            foreach (var track in tracks)
             {
                 notTimingEvents.AddRange(track.Messages);
             }
@@ -63,7 +63,7 @@ namespace Dono.Midi
             if (IsDebugMode) Debug.Log($"[SMF]Start to Separate by Score.");
             Scores = new List<SMFScore>();
             foreach (var track in tracks)
-            {                
+            {
                 var samePortScore = Scores.Find((s) => s.Port == track.Port);
                 switch (track.TrackType)
                 {
@@ -326,11 +326,11 @@ namespace Dono.Midi
             var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.SetTempo);
 
             int minUSPB = 0b11111111_11111111_11111111;
-            foreach(var message in messages)
+            foreach (var message in messages)
             {
                 int uspb = (message.Message.Bytes[3] << 16) + (message.Message.Bytes[4] << 8) + (message.Message.Bytes[5] << 0);
 
-                if(uspb < minUSPB)
+                if (uspb < minUSPB)
                     minUSPB = uspb;
             }
 
@@ -341,11 +341,11 @@ namespace Dono.Midi
         {
             var messages = conductorTrack.Messages.FindAll((n) => n.Message.metaEventType == MetaEventType.SetTempo);
             int maxUSPB = 0b00000000_00000000_00000000;
-            foreach(var message in messages)
+            foreach (var message in messages)
             {
                 int uspb = (message.Message.Bytes[3] << 16) + (message.Message.Bytes[4] << 8) + (message.Message.Bytes[5] << 0);
 
-                if(uspb > maxUSPB)
+                if (uspb > maxUSPB)
                     maxUSPB = uspb;
             }
 
@@ -366,7 +366,7 @@ namespace Dono.Midi
 
             for (int i = 1; i < tempoChages.Count; i++)
             {
-                if(tempoChages[i].Timing.TotalDeltaTime <= totalDeltaTime)
+                if (tempoChages[i].Timing.TotalDeltaTime <= totalDeltaTime)
                     tempoChange = tempoChages[i];
             }
 
@@ -409,7 +409,7 @@ namespace Dono.Midi
         }
 
         public static int BPMToMicroSecPerBeat(float BPM)
-        { 
+        {
             return (int)Math.Round(60_000_000 / (float)BPM, 1, MidpointRounding.AwayFromZero);
         }
     }

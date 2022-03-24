@@ -77,11 +77,11 @@ namespace Dono.Midi
              * tempoEvnets             ●         〇
              * ●を計算する
              */
-            foreach(var changeBeatEvent in changeBeatEvents)
+            foreach (var changeBeatEvent in changeBeatEvents)
             {
                 UpdateRealTime(changeBeatEvent, tempoEvents, division);
             }
-            foreach(var tempoEvent in tempoEvents)
+            foreach (var tempoEvent in tempoEvents)
             {
                 UpdateMeasureTick(tempoEvent, changeBeatEvents, division);
             }
@@ -242,7 +242,7 @@ namespace Dono.Midi
 
         public override string ToString()
         {
-            return $"DT:{TotalDeltaTime:d8}, MT:{Measure:d3}:{Tick:d4}, {RealTime / 1000000 :f3}";
+            return $"DT:{TotalDeltaTime:d8}, MT:{Measure:d3}:{Tick:d4}, {RealTime / 1000000:f3}";
         }
     }
 }

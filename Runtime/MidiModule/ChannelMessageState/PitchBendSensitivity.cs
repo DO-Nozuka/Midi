@@ -20,7 +20,7 @@
     public class FineTune : Midi2ByteValue
     {
         public float Cent => (100f / 8192f) * Value;
-        
+
         public FineTune(float rate) : base(true, rate)
         {
         }

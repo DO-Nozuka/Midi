@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Dono.Midi
 {
@@ -18,10 +17,10 @@ namespace Dono.Midi
                 throw new FormatException();
 
             Messages = messages;
-            
+
 
             // チャンネルの取得
-            foreach(var message in messages)
+            foreach (var message in messages)
             {
                 if (message.Message.messageType == MessageType.ChannelMode || message.Message.messageType == MessageType.ChannelVoice)
                 {
@@ -29,7 +28,7 @@ namespace Dono.Midi
                     {
                         Channel = message.Message.Channel;
                     }
-                    else if(Channel != message.Message.Channel) // フォーマット0でしかありえない
+                    else if (Channel != message.Message.Channel) // フォーマット0でしかありえない
                     {
                         if (format == 0)
                             Channel = -2;
@@ -40,7 +39,7 @@ namespace Dono.Midi
             }
 
             // TrackNameの取得
-            foreach(var message in messages)
+            foreach (var message in messages)
             {
                 if (message.Message.metaEventType == MetaEventType.SequenceAndTrackName)
                 {

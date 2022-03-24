@@ -1,17 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Dono.Midi
 {
     /// <summary>
-    /// Action\<MidiMessage\>Œ^‚ÅOnXXX‚ª‘òR—pˆÓ‚µ‚Ä‚¢‚Ü‚·‚Ì‚ÅA
-    /// ‰º‹Lè‡‚Å‚¨g‚¢‚­‚¾‚³‚¢
-    /// 0. ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬
-    /// 1. OnXXX‚Éƒƒ\ƒbƒh‚ğ“o˜^
-    /// 2. RecieveMessage(MidiMessage message)‚ÉMidiƒƒbƒZ[ƒW‚ğ“n‚·
-    /// 3. OnXXX‚ªÀs‚³‚ê‚é
+    /// Action\<MidiMessage\>å‹ã§OnXXXãŒæ²¢å±±ç”¨æ„ã—ã¦ã„ã¾ã™ã®ã§ã€
+    /// ä¸‹è¨˜æ‰‹é †ã§ãŠä½¿ã„ãã ã•ã„
+    /// 0. ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆ
+    /// 1. OnXXXã«ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ç™»éŒ²
+    /// 2. RecieveMessage(MidiMessage message)ã«Midiãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’æ¸¡ã™
+    /// 3. OnXXXãŒå®Ÿè¡Œã•ã‚Œã‚‹
     /// </summary>
     public partial class MidiModule
     {

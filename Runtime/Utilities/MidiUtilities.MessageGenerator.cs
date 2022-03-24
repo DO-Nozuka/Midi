@@ -51,7 +51,7 @@ namespace Dono.Midi
                 return null;
             return GenerateMidiMessage((byte)((byte)channelVoiceType + channel), data1, data2);
         }
-        public static MidiMessage GenerateControlChangeMessage(ControlChangeType ccType, byte value, byte channel = 0) 
+        public static MidiMessage GenerateControlChangeMessage(ControlChangeType ccType, byte value, byte channel = 0)
         {
             if (ccType == ControlChangeType.None)
                 return null;

@@ -48,23 +48,23 @@
         public void SetRate(float rate)
         {
             // 範囲外の処理
-            if(HasMinus)
+            if (HasMinus)
             {
-                if(!(- 1.0f <= rate) && (rate < 1.0f))
+                if (!(-1.0f <= rate) && (rate < 1.0f))
                 {
                     rate = 0.0f;
                 }
             }
             else
             {
-                if(!(0 <= rate) && (rate <= 1.0f))
+                if (!(0 <= rate) && (rate <= 1.0f))
                 {
                     rate = 0.5f;
                 }
             }
 
             // 0.0f - 1.0fにする
-            if(HasMinus)
+            if (HasMinus)
                 rate = (rate + 1.0f) / 2.0f;
             // else rate = rate;
 
