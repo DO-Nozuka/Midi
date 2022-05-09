@@ -23,7 +23,7 @@ namespace Dono.Midi
         }
         private void onPitchBendChange(MidiMessage message)
         {
-            ChannelState[message.Channel].PitchBend.SetBits(message.Data1, message.Data2);
+            ChannelState[message.Channel].PitchBend.SetBits(message.Data2, message.Data1);
 
             OnPitchBendChange.Invoke(message);
         }
