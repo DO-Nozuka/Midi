@@ -1,8 +1,14 @@
 ﻿namespace Dono.Midi
 {
+    /// <summary>
+    /// ピッチベンドセンシティビティは、RPN 00(MSB)00(LSB)で定義される。
+    /// データエントリーのMSBは半音(100セント)単位で感度を表し、
+    /// LSBは100/128セント単位で感度を表す。
+    /// 例えばMSB=01, LSB=00は±1半音(計2半音)を表す。
+    /// </summary>
     public class PitchBendSensitivity : Midi2ByteValue
     {
-        public float Cent => Value / 128f;
+        public float Cent => Value / 128f * 100f;
 
         public PitchBendSensitivity(float rate) : base(true, rate)
         {
@@ -12,7 +18,7 @@
         {
         }
 
-        public PitchBendSensitivity(byte msb = 255, byte lsb = 255) : base(true, msb, lsb)
+        public PitchBendSensitivity(byte msb = 255, byte lsb = 255) : base(false, msb, lsb)
         {
         }
     }
