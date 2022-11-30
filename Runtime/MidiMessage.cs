@@ -85,6 +85,8 @@ namespace Dono.Midi
         public bool IsNote => channelVoiceType == ChannelVoiceType.NoteOn || channelVoiceType == ChannelVoiceType.NoteOff;
         public bool IsWhiteNote => IsNote && MidiUtilities.IsWhiteNote(Data1);
         public bool IsBlackNote => IsNote && MidiUtilities.IsBlackNote(Data1);
+        public bool IsCC => channelVoiceType == ChannelVoiceType.ControlChange;
+        public bool IsCCMsb => IsCC && Data1 < 32;
         #endregion
 
         internal MidiMessage(byte status, bool isSMF = false)
