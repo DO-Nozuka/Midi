@@ -39,6 +39,15 @@ namespace Dono.Midi
                 {
                     ChannelState[message.Channel].Parameter.MasterTuning.CoarseTune.SetBits(message.Data2);
                 }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x03)
+                {
+                    ChannelState[message.Channel].Parameter.TuningProgram.SetBits(message.Data2);
+                }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x04)
+                {
+                    // NotImplementation
+                    //ChannelState[message.Channel].Parameter.TuningBank.SetBits(message.Data2);
+                }
             }
             else
             {
@@ -78,7 +87,15 @@ namespace Dono.Midi
                 }
                 else if (RPN_MSB == 0x00 && RPN_LSB == 0x02)
                 {
-                    // NOP: CoarseTuneではLSBが無視される
+                    ;   // NOP: CoarseTuneではLSBが無視される
+                }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x03)
+                {
+                    ChannelState[message.Channel].Parameter.TuningProgram.IncValue();
+                }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x04)
+                {
+                    ChannelState[message.Channel].Parameter.TuningBank.IncValue();
                 }
             }
             else
@@ -121,6 +138,14 @@ namespace Dono.Midi
                 {
                     ChannelState[message.Channel].Parameter.MasterTuning.CoarseTune.IncValue();
                 }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x03)
+                {
+                    ChannelState[message.Channel].Parameter.TuningProgram.IncValue();
+                }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x04)
+                {
+                    ChannelState[message.Channel].Parameter.TuningBank.IncValue();
+                }
             }
             else
             {
@@ -159,6 +184,14 @@ namespace Dono.Midi
                 else if (RPN_MSB == 0x00 && RPN_LSB == 0x02)
                 {
                     ChannelState[message.Channel].Parameter.MasterTuning.CoarseTune.DecValue();
+                }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x03)
+                {
+                    ChannelState[message.Channel].Parameter.TuningProgram.DecValue();
+                }
+                else if (RPN_MSB == 0x00 && RPN_LSB == 0x04)
+                {
+                    ChannelState[message.Channel].Parameter.TuningBank.DecValue();
                 }
             }
             else
