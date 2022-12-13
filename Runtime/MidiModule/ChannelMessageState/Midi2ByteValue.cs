@@ -1,7 +1,11 @@
-﻿namespace Dono.Midi
+﻿using System;
+
+namespace Dono.Midi
 {
     public class Midi2ByteValue
     {
+        public Action<Midi2ByteValue> OnValueChange;
+
         /// <summary>
         /// HasMinus == true : The range of Value is -8192 to 8191
         /// HasMinus == false: The range of Value is 0 to 16383
@@ -135,7 +139,6 @@
 
             // msb/lsbより再計算
             calcAll(HasMinus, Msb, Lsb);
-
         }
 
         public void IncValue()
@@ -194,6 +197,8 @@
             Rate = calcRate(hasMinus, msb, lsb);
             ValueMSB = calcValueMSB(hasMinus, msb);
             RateMSB = calcRateMSB(hasMinus, msb);
+
+            OnValueChange?.Invoke(this);
         }
 
         // Constructors

@@ -1,4 +1,6 @@
-﻿namespace Dono.Midi
+﻿using System;
+
+namespace Dono.Midi
 {
     /// <summary>
     /// 内部では全てBitsを基準に計算します
@@ -6,6 +8,8 @@
     /// </summary>
     public class Midi1ByteValue
     {
+        public Action<Midi1ByteValue> OnValueChanged;
+
         /// <summary>
         /// HasMinus == true : The range of Value is -64 to 63
         /// HasMinus == false: The range of Value is 0 to 127
@@ -114,6 +118,8 @@
         {
             Value = calcValue(hasMinus, bits);
             Rate = calcRate(hasMinus, bits);
+
+            OnValueChanged?.Invoke(this);
         }
 
         public Midi1ByteValue(bool hasMinus, byte msb = 255)
