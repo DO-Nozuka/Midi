@@ -307,7 +307,8 @@ namespace Dono.Midi
             byte[] data = new byte[dataLength];
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
-
+            
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             return Encoding.GetEncoding("Shift_JIS").GetString(data);
         }
 
@@ -318,6 +319,7 @@ namespace Dono.Midi
             int startIndex = message.Bytes.Length - dataLength;
             Array.Copy(message.Bytes, startIndex, data, 0, dataLength);
 
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             return Encoding.GetEncoding("Shift_JIS").GetString(data);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Dono.Midi
 {
@@ -50,7 +51,9 @@ namespace Dono.Midi
                     var trackNameBytes = new byte[dataLength];
                     Array.Copy(bytes, index, trackNameBytes, 0, dataLength);
 
-                    TrackName = System.Text.Encoding.GetEncoding("Shift_JIS").GetString(trackNameBytes);
+
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    TrackName = Encoding.GetEncoding("Shift_JIS").GetString(trackNameBytes);
                 }
             }
 
