@@ -126,7 +126,7 @@ namespace Dono.Midi
         private static void UpdateTempo(SMFTiming smfTiming, List<SMFEvent> tempoEvents, List<SMFEvent> changeBeatEvents)
         {
             // 一番近いTempoを見つける
-            SMFEvent nearestTimingEvent = null;
+            SMFEvent nearestTimingEvent = tempoEvents[tempoEvents.Count - 1];
             for (int i = 0; i < tempoEvents.Count; i++)
             {
                 if (smfTiming.TotalDeltaTime == tempoEvents[i].Timing.TotalDeltaTime)
@@ -141,7 +141,7 @@ namespace Dono.Midi
                 }
             }
 
-            SMFEvent nearestChangeBeatEvent = null;
+            SMFEvent nearestChangeBeatEvent = changeBeatEvents[changeBeatEvents.Count - 1];
             for (int i = 0; i < changeBeatEvents.Count; i++)
             {
                 if (smfTiming.TotalDeltaTime == changeBeatEvents[i].Timing.TotalDeltaTime)
