@@ -157,7 +157,7 @@ namespace Dono.Midi
             }
             if (nearestTimingEvent != null && nearestChangeBeatEvent != null)
             {
-                var bpm = 1 / nearestTimingEvent.Message.QuarterNoteLength;
+                var bpm = 60 / (nearestTimingEvent.Message.QuarterNoteLength / 1000000);
                 var beatNu = nearestChangeBeatEvent.Message.Bytes[3];
                 var beatDe = nearestChangeBeatEvent.Message.Bytes[4];
                 smfTiming.Tempo = new SMFTempo(bpm, beatNu, beatDe);
