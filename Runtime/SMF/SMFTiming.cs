@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dono.Midi
 {
@@ -11,6 +12,7 @@ namespace Dono.Midi
     {
         public int Measure { get; private set; }
         public int Tick { get; private set; }
+        public SMFTempo Tempo { get; private set; }
         /// <summary>
         /// in MicroSec
         /// </summary>
@@ -27,6 +29,7 @@ namespace Dono.Midi
 
         public SMFTiming(int totalDeltaTime, int division, List<SMFEvent> tempoEvents, List<SMFEvent> changeBeatEvents) : this(totalDeltaTime, division)
         {
+            UpdateTempo(this, tempoEvents, changeBeatEvents);
             UpdateRealTime(this, tempoEvents, division);
             UpdateMeasureTick(this, changeBeatEvents, division);
         }
@@ -120,12 +123,51 @@ namespace Dono.Midi
                 tempoEvents[i].Timing.RealTime = tempoEvents[i - 1].Timing.RealTime + diffRealTime;
             }
         }
+        private static void UpdateTempo(SMFTiming smfTiming, List<SMFEvent> tempoEvents, List<SMFEvent> changeBeatEvents)
+        {
+            // 一番近いTempoを見つける
+            SMFEvent nearestTimingEvent = null;
+            for (int i = 0; i < tempoEvents.Count; i++)
+            {
+                if (smfTiming.TotalDeltaTime == tempoEvents[i].Timing.TotalDeltaTime)
+                {
+                    nearestTimingEvent = tempoEvents[i];
+                    break;
+                }
+                else if (smfTiming.TotalDeltaTime < tempoEvents[i].Timing.TotalDeltaTime)
+                {
+                    nearestTimingEvent = tempoEvents[i - 1];
+                    break;
+                }
+            }
+
+            SMFEvent nearestChangeBeatEvent = null;
+            for (int i = 0; i < changeBeatEvents.Count; i++)
+            {
+                if (smfTiming.TotalDeltaTime == changeBeatEvents[i].Timing.TotalDeltaTime)
+                {
+                    nearestChangeBeatEvent = changeBeatEvents[i];
+                    break;
+                }
+                else if (smfTiming.TotalDeltaTime < changeBeatEvents[i].Timing.TotalDeltaTime)
+                {
+                    nearestChangeBeatEvent = changeBeatEvents[i - 1];
+                    break;
+                }
+            }
+            if (nearestTimingEvent != null && nearestChangeBeatEvent != null)
+            {
+                var bpm = 1 / nearestTimingEvent.Message.QuarterNoteLength;
+                var beatNu = nearestChangeBeatEvent.Message.Bytes[3];
+                var beatDe = nearestChangeBeatEvent.Message.Bytes[4];
+                smfTiming.Tempo = new SMFTempo(bpm, beatNu, beatDe);
+            }
+        }
         private static void UpdateRealTime(SMFEvent smfEvent, List<SMFEvent> tempoEvents, int division)
         {
             // nullチェック
             if (smfEvent == null)
                 throw new FormatException();
-
 
             UpdateRealTime(smfEvent.Timing, tempoEvents, division);
         }

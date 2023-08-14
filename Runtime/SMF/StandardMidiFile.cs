@@ -12,7 +12,7 @@ namespace Dono.Midi
         public SMFTrack ConductorTrack;
         public List<SMFScore> Scores;
 
-        private bool IsDebugMode = true;
+        private bool IsDebugMode = false;
         private int division = 0;
 
         public StandardMidiFile(byte[] data)
@@ -111,7 +111,7 @@ namespace Dono.Midi
                     strBuilder.Append(@event.Message.ToString());
                     strBuilder.Append('\n');
                 }
-                Debug.Log(strBuilder.ToString());
+                //Debug.Log(strBuilder.ToString());
             }
 
             //StringBuilder sb = new StringBuilder("");
